@@ -8,7 +8,7 @@ import { TabScreen } from './src/navigation/TabNavigator';
 
 const Stack = createStackNavigator();
 
-export default function App() {
+const App = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
@@ -32,4 +32,6 @@ export default function App() {
             </Stack.Navigator>
         </NavigationContainer>
     );
-}
+};
+
+export default App;
