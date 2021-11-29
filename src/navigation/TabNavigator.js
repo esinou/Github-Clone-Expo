@@ -63,7 +63,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
     );
 };
 
-export const TabScreen = () => {
+export const TabScreen = ({ octokit, navigation }) => {
     return (
         <Tab.Navigator
             tabBar={(props) => <CustomTabBar {...props} />}
@@ -73,25 +73,28 @@ export const TabScreen = () => {
         >
             <Tab.Screen
                 name="Home"
-                component={Home}
                 navigationOptions={{
                     gesturesEnabled: false,
                 }}
-            />
+            >
+                {(props) => <Home octokit={octokit} navigation={props.navigation} />}
+            </Tab.Screen>
             <Tab.Screen
                 name="Search"
-                component={Search}
                 navigationOptions={{
                     gesturesEnabled: false,
                 }}
-            />
+            >
+                {(props) => <Search octokit={octokit} navigation={props.navigation} />}
+            </Tab.Screen>
             <Tab.Screen
                 name="Profile"
-                component={Profile}
                 navigationOptions={{
                     gesturesEnabled: false,
                 }}
-            />
+            >
+                {(props) => <Profile octokit={octokit} navigation={props.navigation} />}
+            </Tab.Screen>
         </Tab.Navigator>
     );
 };
