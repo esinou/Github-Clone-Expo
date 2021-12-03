@@ -113,6 +113,9 @@ export const TabScreen = ({ octokit, navigation }) => {
                 navigationOptions={{
                     gesturesEnabled: false,
                 }}
+                options={{
+                    headerShown: false,
+                }}
             />
             <Tab.Screen
                 name="SearchDetailsRepo"
@@ -120,12 +123,18 @@ export const TabScreen = ({ octokit, navigation }) => {
                 navigationOptions={{
                     gesturesEnabled: false,
                 }}
+                options={{
+                    headerShown: false,
+                }}
             />
             <Tab.Screen
                 name="SearchDetailsIssue"
                 component={SearchDetailsIssue}
                 navigationOptions={{
                     gesturesEnabled: false,
+                }}
+                options={{
+                    headerShown: false,
                 }}
             />
         </Tab.Navigator>

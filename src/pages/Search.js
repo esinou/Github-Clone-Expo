@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
 import styled from 'styled-components/native';
+import { Animated, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
-import { StyledContainerStartingTop } from '../styled/Containers';
+import { EmptyFlex, InfoContainer, StyledContainerStartingTop, StyledScrollView } from '../styled/Containers';
 
 const DisplayUsers = ({ users, navigate, octokit }) => {
     const [showFull, setShowFull] = useState(false);
 
     return (
-        <StyledSectionContainer>
-            <StyledSectionTitleContainer onPress={() => setShowFull(!showFull)}>
-                <StyledSectionTitle>Users</StyledSectionTitle>
-                <Feather name={showFull ? 'minus-circle' : 'plus-circle'} size={25} color="black" />
-            </StyledSectionTitleContainer>
+        <Animated.View
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: '100%',
+            }}
+        >
+            <InfoContainer iconName="person-outline" label="Users" />
             <StyledSectionMap showFull={showFull}>
                 {users.map((element, index) => (
                     <StyledUserContainer
@@ -33,13 +37,13 @@ const DisplayUsers = ({ users, navigate, octokit }) => {
                                 }}
                             />
                             <StyledUsername>{element.login}</StyledUsername>
-                            <StyledEmptyFlex />
+                            <EmptyFlex />
                             <Feather name="arrow-right" size={25} color="black" />
                         </StyledUserHeader>
                     </StyledUserContainer>
                 ))}
             </StyledSectionMap>
-        </StyledSectionContainer>
+        </Animated.View>
     );
 };
 
@@ -48,10 +52,7 @@ const DisplayRepos = ({ repos, navigate, octokit }) => {
 
     return (
         <StyledSectionContainer>
-            <StyledSectionTitleContainer onPress={() => setShowFull(!showFull)}>
-                <StyledSectionTitle>Repositories</StyledSectionTitle>
-                <Feather name={showFull ? 'minus-circle' : 'plus-circle'} size={25} color="black" />
-            </StyledSectionTitleContainer>
+            <InfoContainer iconName="file-tray-full-outline" label="Repositories" />
             <StyledSectionMap showFull={showFull}>
                 {repos.map((element, index) => (
                     <StyledUserContainer
@@ -70,7 +71,7 @@ const DisplayRepos = ({ repos, navigate, octokit }) => {
                                 <StyledUsername>{element.name}</StyledUsername>
                                 <StyledName>{'@' + element.owner.login}</StyledName>
                             </StyledNameContainer>
-                            <StyledEmptyFlex />
+                            <EmptyFlex />
                             <Feather name="arrow-right" size={25} color="black" />
                         </StyledReposHeader>
                     </StyledUserContainer>
@@ -85,10 +86,7 @@ const DisplayIssues = ({ issues, navigate, octokit }) => {
 
     return (
         <StyledSectionContainer>
-            <StyledSectionTitleContainer onPress={() => setShowFull(!showFull)}>
-                <StyledSectionTitle>Issues & Pull Request</StyledSectionTitle>
-                <Feather name={showFull ? 'minus-circle' : 'plus-circle'} size={25} color="black" />
-            </StyledSectionTitleContainer>
+            <InfoContainer iconName="bulb-outline" label="Issues & PR" />
             <StyledSectionMap showFull={showFull}>
                 {issues.map((element, index) => (
                     <StyledUserContainer
@@ -108,7 +106,7 @@ const DisplayIssues = ({ issues, navigate, octokit }) => {
                                 <StyledUsername>{element.title}</StyledUsername>
                                 <StyledName>{'@' + element.user.login}</StyledName>
                             </StyledNameContainer>
-                            <StyledEmptyFlex />
+                            <EmptyFlex />
                             <Feather name="arrow-right" size={25} color="black" />
                         </StyledReposHeader>
                     </StyledUserContainer>
@@ -129,11 +127,6 @@ const StyledName = styled.Text`
     font-size: 12px;
     text-transform: uppercase;
     color: rgba(0, 0, 0, 0.3);
-`;
-
-const StyledEmptyFlex = styled.View`
-    display: flex;
-    flex: 1;
 `;
 
 const StyledSectionTitleContainer = styled.TouchableOpacity`
@@ -222,7 +215,6 @@ const Search = ({ octokit, navigation }) => {
                 q,
             });
             if (req?.status === 200 && req?.data?.items) {
-                console.log(req.data.items);
                 setValue(req.data.items);
             }
         } catch (e) {
@@ -238,7 +230,7 @@ const Search = ({ octokit, navigation }) => {
                 {users.length || repos.length || issuesAndPullRequests.length ? (
                     <>
                         <StyledSeparator />
-                        <StyledTitle>Your Results</StyledTitle>
+                        <StyledTitle>Results</StyledTitle>
                     </>
                 ) : (
                     <></>
@@ -261,10 +253,6 @@ const StyledTitle = styled.Text`
     text-transform: uppercase;
     text-align: center;
     margin-bottom: 15px;
-`;
-
-const StyledScrollView = styled.ScrollView`
-    width: 100%;
 `;
 
 const StyledSeparator = styled.View`
