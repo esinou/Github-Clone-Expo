@@ -75,6 +75,20 @@ export const TabScreen = ({ octokit, navigation }) => {
             navigationOptions={{
                 gesturesEnabled: false,
             }}
+            screenOptions={{
+                headerShown: true,
+                headerStyle: {
+                    backgroundColor: 'black',
+                    height: 80,
+                    borderBottomLeftRadius: 20,
+                    borderBottomRightRadius: 20,
+                },
+                headerTintColor: '#fff',
+                headerTitleStyle: {
+                    fontSize: 20,
+                    fontFamily: 'Montserrat_500Medium',
+                },
+            }}
         >
             <Tab.Screen
                 name="Home"

@@ -1,21 +1,26 @@
 import React from 'react';
-import { Button, Text, View, TextInput } from 'react-native';
-import styled from 'styled-components/native';
+import { StatusBar } from 'expo-status-bar';
+import { GITHUB_TOKEN } from '@env';
+import { Button } from '../components/Button';
+import { Input } from '../components/Input';
+import { StyledContainer } from '../styled/Container';
 
 const Login = ({ navigation, octokit }) => {
+    const connect = () => {
+        if (GITHUB_TOKEN === '' || GITHUB_TOKEN === undefined) {
+            // Erreur
+        } else {
+            navigation.navigate('Github');
+        }
+    };
+
     return (
-        <View style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Text>Login</Text>
-            <StyledButton title="Aller sur le home" onPress={() => navigation.navigate('Github')} />
-            <TextInput />
-        </View>
+        <StyledContainer>
+            <StatusBar backgroundColor="light" />
+            <Input value={GITHUB_TOKEN} disabled />
+            <Button onPress={connect} label="Connect to my account" />
+        </StyledContainer>
     );
 };
-
-const StyledButton = styled.Button`
-    display: flex;
-    background-color: transparent;
-    border: 1px solid black;
-`;
 
 export default Login;

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, View, Dimensions } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import WaveImage from '../images/wave.png';
 
 const Splash = ({ navigation }) => {
     const timerAnimation = 3000;
@@ -50,7 +51,7 @@ const Splash = ({ navigation }) => {
                 }}
             />
             <Animated.Image
-                source={require('../images/wave.png')}
+                source={WaveImage}
                 style={{
                     position: 'absolute',
                     bottom: slideBottomAnim,
