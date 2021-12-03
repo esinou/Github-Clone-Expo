@@ -4,8 +4,8 @@ import { FontAwesome } from '@expo/vector-icons';
 import WaveImage from '../images/wave.png';
 
 const Splash = ({ navigation }) => {
-    const timerAnimation = 3000;
-    const slideBottomAnim = useRef(new Animated.Value(0)).current;
+    const timerAnimation = 4000;
+    const slideBottomAnim = useRef(new Animated.Value(-Dimensions.get('screen').height)).current;
     const slideLeftAnim = useRef(new Animated.Value(-Dimensions.get('screen').width)).current;
 
     useEffect(() => {

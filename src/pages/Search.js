@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components/native';
 import { Feather } from '@expo/vector-icons';
+import { Button } from '../components/Button';
+import { Input } from '../components/Input';
+import { StyledContainerStartingTop } from '../styled/Containers';
 
 const DisplayUsers = ({ users, navigate, octokit }) => {
     const [showFull, setShowFull] = useState(false);
@@ -135,12 +138,14 @@ const StyledEmptyFlex = styled.View`
 
 const StyledSectionTitleContainer = styled.TouchableOpacity`
     display: flex;
-    border: 1px solid rgba(0, 0, 0, 1);
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0, 0, 0, 1);
     border-radius: 10px;
     padding: 10px;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 10px;
 `;
 
 const StyledUsername = styled.Text`
@@ -159,7 +164,8 @@ const StyledSectionContainer = styled.View`
 `;
 
 const StyledSectionTitle = styled.Text`
-    font-size: 22px;
+    font-size: 18px;
+    font-family: 'Montserrat_500Medium';
 `;
 
 const StyledUserContainer = styled.TouchableOpacity`
@@ -225,12 +231,18 @@ const Search = ({ octokit, navigation }) => {
     };
 
     return (
-        <StyledContainer>
-            <StyledInput value={search} onChangeText={setSearch} placeholder="Search something..." />
-            <StyledButton onPress={searchEverything}>
-                <StyledButtonLabel>Rechercher</StyledButtonLabel>
-            </StyledButton>
+        <StyledContainerStartingTop>
             <StyledScrollView showsVerticalScrollIndicator={false}>
+                <Input value={search} disabled={false} onChange={setSearch} placeholder="Search something..." />
+                <Button onPress={searchEverything} label="Search" />
+                {users.length || repos.length || issuesAndPullRequests.length ? (
+                    <>
+                        <StyledSeparator />
+                        <StyledTitle>Your Results</StyledTitle>
+                    </>
+                ) : (
+                    <></>
+                )}
                 {users.length ? <DisplayUsers users={users} navigate={navigation.navigate} octokit={octokit} /> : <></>}
                 {repos.length ? <DisplayRepos repos={repos} navigate={navigation.navigate} octokit={octokit} /> : <></>}
                 {issuesAndPullRequests.length ? (
@@ -239,44 +251,28 @@ const Search = ({ octokit, navigation }) => {
                     <></>
                 )}
             </StyledScrollView>
-        </StyledContainer>
+        </StyledContainerStartingTop>
     );
 };
 
-const StyledInput = styled.TextInput`
-    display: flex;
-    width: 100%;
-    border: 1px solid black;
-    border-radius: 10px;
-    padding: 10px;
-    font-size: 19px;
-`;
-
-const StyledContainer = styled.View`
-    display: flex;
-    flex-direction: column;
-    width: 90%;
-    margin: 0 auto;
-`;
-
-const StyledButton = styled.TouchableOpacity`
-    display: flex;
-    width: 100%;
-    background-color: black;
-    border-radius: 10px;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    margin: 10px 0;
-`;
-
-const StyledButtonLabel = styled.Text`
-    color: white;
-    font-size: 20px;
+const StyledTitle = styled.Text`
+    color: rgba(0, 0, 0, 0.2);
+    font-family: 'Montserrat_500Medium';
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 15px;
 `;
 
 const StyledScrollView = styled.ScrollView`
-    margin-bottom: 60px;
+    width: 100%;
+`;
+
+const StyledSeparator = styled.View`
+    display: flex;
+    height: 1px;
+    width: 80%;
+    margin: 20px auto;
+    background-color: rgba(0, 0, 0, 0.2);
 `;
 
 export default Search;

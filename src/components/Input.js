@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components/native';
 
-export const Input = ({ onChange, value, placeholder, disabled = false }) => (
-    <StyledInput onChange={onChange} value={value} disabled={disabled} placeholder={placeholder} />
+export const Input = ({ onChange = () => {}, value = '', placeholder = '', disabled = false }) => (
+    <StyledInput onChangeText={onChange} value={value} editable={!disabled} placeholder={placeholder} />
 );
 
 const StyledInput = styled.TextInput`
@@ -17,4 +17,6 @@ const StyledInput = styled.TextInput`
     height: 50px;
     border-radius: 12px;
     width: 100%;
+    font-family: 'Montserrat_500Medium';
+    font-size: 16px;
 `;

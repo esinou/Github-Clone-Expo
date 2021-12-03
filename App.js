@@ -3,12 +3,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Octokit } from '@octokit/rest';
 import { GITHUB_TOKEN } from '@env';
+import { useFonts, Montserrat_500Medium } from '@expo-google-fonts/montserrat';
 
 import Splash from './src/pages/Splash';
 import Login from './src/pages/Login';
 import { TabScreen } from './src/navigation/TabNavigator';
-
-import { useFonts, Montserrat_500Medium } from '@expo-google-fonts/montserrat';
+import { HeaderOptions } from './src/navigation/Header';
 
 const Stack = createStackNavigator();
 
@@ -25,20 +25,7 @@ const App = () => {
         <NavigationContainer>
             <Stack.Navigator
                 initialRouteName="Splash"
-                screenOptions={{
-                    headerShown: true,
-                    headerStyle: {
-                        backgroundColor: 'black',
-                        height: 100,
-                        borderBottomLeftRadius: 20,
-                        borderBottomRightRadius: 20,
-                    },
-                    headerTintColor: '#fff',
-                    headerTitleStyle: {
-                        fontSize: 20,
-                        fontFamily: 'Montserrat_500Medium',
-                    },
-                }}
+                screenOptions={HeaderOptions}
                 navigationOptions={{
                     gesturesEnabled: false,
                 }}

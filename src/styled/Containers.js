@@ -11,4 +11,9 @@ const StyledContainer = styled.View`
     position: relative;
 `;
 
-export { StyledContainer };
+const StyledContainerStartingTop = styled(StyledContainer)`
+    align-items: flex-start;
+    margin-top: 10px;
+`;
+
+export { StyledContainer, StyledContainerStartingTop };

@@ -1,8 +1,10 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import styled from 'styled-components/native';
+import { View } from 'react-native';
 
+import { HeaderOptions } from './Header';
 import Search from '../pages/Search';
 import Home from '../pages/Home';
 import Profile from '../pages/Profile';
@@ -28,7 +30,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
                         : route.name;
                 const labelIsBottomTabBar =
                     label === 'Home' ? true : label === 'Search' ? true : label === 'Profile' ? true : false;
-                const iconName = label === 'Home' ? 'home' : label.startsWith('Search') ? 'search' : 'user';
+                const iconName = label === 'Home' ? 'earth' : label.startsWith('Search') ? 'search' : 'person';
                 const isFocused = state.index === index;
                 const onPress = () => {
                     const event = navigation.emit({
@@ -58,10 +60,14 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
                         onLongPress={onLongPress}
                         key={index}
                     >
-                        <Feather name={iconName} size={25} color={isFocused ? 'red' : 'black'} />
+                        <Ionicons
+                            name={!isFocused ? iconName + '-outline' : iconName}
+                            size={25}
+                            color={isFocused ? 'black' : 'rgba(0, 0, 0, .2)'}
+                        />
                     </StyledIconContainer>
                 ) : (
-                    <></>
+                    <View key={index} />
                 );
             })}
         </StyledTabBar>
@@ -75,20 +81,7 @@ export const TabScreen = ({ octokit, navigation }) => {
             navigationOptions={{
                 gesturesEnabled: false,
             }}
-            screenOptions={{
-                headerShown: true,
-                headerStyle: {
-                    backgroundColor: 'black',
-                    height: 80,
-                    borderBottomLeftRadius: 20,
-                    borderBottomRightRadius: 20,
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                    fontSize: 20,
-                    fontFamily: 'Montserrat_500Medium',
-                },
-            }}
+            screenOptions={HeaderOptions}
         >
             <Tab.Screen
                 name="Home"
@@ -141,15 +134,15 @@ export const TabScreen = ({ octokit, navigation }) => {
 
 const StyledTabBar = styled.View`
     width: 100%;
-    height: 85px;
+    height: 60px;
     align-items: center;
     justify-content: center;
     position: relative;
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
     background-color: white;
     flex-direction: row;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
 `;
 
 const StyledIconContainer = styled.TouchableOpacity`
