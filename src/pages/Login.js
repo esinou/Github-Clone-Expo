@@ -19,7 +19,7 @@ const Login = ({ navigation, octokit }) => {
         <StyledContainer>
             <FontAwesome name="github" size={100} color="black" />
             <View style={{ height: 100 }} />
-            <Input value={GITHUB_TOKEN} disabled />
+            <Input iconName="apps-outline" value={GITHUB_TOKEN} disabled />
             <Button onPress={connect} label="Connect to my account" />
         </StyledContainer>
     );

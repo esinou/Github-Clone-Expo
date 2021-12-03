@@ -2,6 +2,18 @@ import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 
+const TitleContainer = ({ iconName, label = null, value = 'none' }) =>
+    label !== null ? (
+        <StyledTitleContainer>
+            <Ionicons name={iconName} size={25} color="black" />
+            <StyledInfoLabel>{label}</StyledInfoLabel>
+            <EmptyFlex />
+            {value !== 'none' ? <StyledInfoValue>{value}</StyledInfoValue> : <></>}
+        </StyledTitleContainer>
+    ) : (
+        <></>
+    );
+
 const InfoContainer = ({ iconName, label = null, value = 'none' }) =>
     label !== null ? (
         <StyledInfoContainer>
@@ -41,6 +53,19 @@ const StyledInfoContainer = styled.View`
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
 `;
 
+const StyledTitleContainer = styled.View`
+    display: flex;
+    flex-direction: row;
+    height: 46px;
+    width: 100%;
+    margin: 10px auto;
+    background-color: transparent;
+    align-items: center;
+    justify-content: flex-start;
+    border-bottom-width: 2px;
+    border-bottom-color: rgba(0, 0, 0, 0.7);
+`;
+
 const EmptyFlex = styled.View`
     display: flex;
     flex: 1;
@@ -55,6 +80,7 @@ const StyledContainer = styled.View`
     width: 90%;
     margin: 0 auto;
     position: relative;
+    background-color: transparent;
 `;
 
 const StyledContainerStartingTop = styled(StyledContainer)`
@@ -67,4 +93,4 @@ const StyledScrollView = styled.ScrollView`
     width: 100%;
 `;
 
-export { StyledContainer, StyledContainerStartingTop, StyledScrollView, InfoContainer, EmptyFlex };
+export { StyledContainer, StyledContainerStartingTop, StyledScrollView, InfoContainer, TitleContainer, EmptyFlex };
