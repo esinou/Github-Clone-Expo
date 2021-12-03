@@ -6,6 +6,7 @@ import styled from 'styled-components/native';
 import Search from '../pages/Search';
 import Home from '../pages/Home';
 import Profile from '../pages/Profile';
+import { SearchDetailsIssue, SearchDetailsRepo, SearchDetailsUser } from '../pages/SearchDetails';
 
 const Tab = createBottomTabNavigator();
 
@@ -25,7 +26,9 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
                         : options.title !== undefined
                         ? options.title
                         : route.name;
-                const iconName = label === 'Home' ? 'home' : label === 'Search' ? 'search' : 'user';
+                const labelIsBottomTabBar =
+                    label === 'Home' ? true : label === 'Search' ? true : label === 'Profile' ? true : false;
+                const iconName = label === 'Home' ? 'home' : label.startsWith('Search') ? 'search' : 'user';
                 const isFocused = state.index === index;
                 const onPress = () => {
                     const event = navigation.emit({
@@ -45,7 +48,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
                     });
                 };
 
-                return (
+                return labelIsBottomTabBar ? (
                     <StyledIconContainer
                         accessibilityRole="button"
                         accessibilityState={isFocused ? { selected: true } : {}}
@@ -57,6 +60,8 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
                     >
                         <Feather name={iconName} size={25} color={isFocused ? 'red' : 'black'} />
                     </StyledIconContainer>
+                ) : (
+                    <></>
                 );
             })}
         </StyledTabBar>
@@ -95,6 +100,27 @@ export const TabScreen = ({ octokit, navigation }) => {
             >
                 {(props) => <Profile octokit={octokit} navigation={props.navigation} />}
             </Tab.Screen>
+            <Tab.Screen
+                name="SearchDetailsUser"
+                component={SearchDetailsUser}
+                navigationOptions={{
+                    gesturesEnabled: false,
+                }}
+            />
+            <Tab.Screen
+                name="SearchDetailsRepo"
+                component={SearchDetailsRepo}
+                navigationOptions={{
+                    gesturesEnabled: false,
+                }}
+            />
+            <Tab.Screen
+                name="SearchDetailsIssue"
+                component={SearchDetailsIssue}
+                navigationOptions={{
+                    gesturesEnabled: false,
+                }}
+            />
         </Tab.Navigator>
     );
 };
