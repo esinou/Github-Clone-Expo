@@ -109,6 +109,33 @@ const StyledUsername = styled.Text`
     font-family: 'Montserrat_500Medium';
 `;
 
+const StyledFollowContainer = styled.TouchableOpacity`
+    display: flex;
+    min-width: 35px;
+    height: 25px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    border-radius: 5px;
+    padding: 0 5px;
+    margin: 0 10px;
+`;
+
+const StyledFollowContainerCount = styled.View`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+    min-width: 20px;
+    border-left-width: 1px;
+    border-left-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.15);
+    margin-left: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+`;
+
 export {
     StyledContainer,
     StyledContainerStartingTop,
@@ -120,4 +147,6 @@ export {
     StyledBio,
     StyledFlex,
     StyledUsername,
+    StyledFollowContainer,
+    StyledFollowContainerCount,
 };

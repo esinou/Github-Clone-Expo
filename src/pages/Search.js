@@ -54,6 +54,7 @@ const Search = ({ octokit, navigation }) => {
     const onPressRepoRow = async (owner, repo) => {
         navigation.navigate('SearchDetailsRepo', {
             repo: await getRepository(octokit, owner, repo),
+            octokit,
         });
     };
 

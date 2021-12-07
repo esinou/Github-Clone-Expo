@@ -252,8 +252,6 @@ const StyledProfilePicture = styled.Image`
     width: 50px;
     height: 50px;
     border-radius: 50px;
-    border-width: 1px;
-    border-color: rgba(0, 0, 0, 0.2);
     margin-right: 10px;
 `;
 

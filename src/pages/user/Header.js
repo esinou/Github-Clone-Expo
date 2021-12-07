@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components/native';
 import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { GoBack } from '../../styled/Containers';
+import { GoBack, StyledFollowContainer } from '../../styled/Containers';
 import { StyledFlex, StyledUsername } from '../../styled/Containers';
 import { followThisUser, unfollowThisUser } from '../../api/Github';
 
@@ -77,16 +77,6 @@ const UserHeader = ({
         </StyledUserHeader>
     );
 };
-
-const StyledFollowContainer = styled.TouchableOpacity`
-    display: flex;
-    width: 35px;
-    height: 25px;
-    align-items: center;
-    justify-content: center;
-    background-color: white;
-    border-radius: 5px;
-`;
 
 const StyledUserHeader = styled.View`
     display: flex;

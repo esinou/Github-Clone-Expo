@@ -5,9 +5,28 @@ const getRepoWatchers = (octokit, owner, repo, per_page) =>
         per_page,
     });
 
+const getThisRepoContent = (octokit, owner, repo) =>
+    octokit.rest.repos.getContent({
+        owner,
+        repo,
+        path: '',
+    });
+
 const searchThis = (octokit, path, q) =>
     octokit.rest.search[path]({
         q,
+    });
+
+const starThisRepo = (octokit, owner, repo) =>
+    octokit.rest.activity.starRepoForAuthenticatedUser({
+        owner,
+        repo,
+    });
+
+const unstarThisRepo = (octokit, owner, repo) =>
+    octokit.rest.activity.unstarRepoForAuthenticatedUser({
+        owner,
+        repo,
     });
 
 const followThisUser = (octokit, username) =>
@@ -56,6 +75,9 @@ const getUserFollowers = (octokit) => octokit.request('GET /user/followers');
 const getUserFollowing = (octokit) => octokit.request('GET /user/following');
 
 export {
+    getThisRepoContent,
+    unstarThisRepo,
+    starThisRepo,
     searchThis,
     getByUsername,
     getRepository,
