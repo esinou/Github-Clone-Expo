@@ -1,8 +1,14 @@
-import { getByUsername, getUsersFollowers, getUsersFollowing } from '../../api/Github';
-import { StyledContainerStartingTop, StyledScreenHeader, StyledScrollView } from '../../styled/Containers';
-import { DisplayRow, DisplayType } from './DisplayRows';
 import React from 'react';
-import { GoBack, StyledFlex, StyledUsername } from './Details';
+import { getByUsername, getUsersFollowers, getUsersFollowing } from '../../api/Github';
+import {
+    GoBack,
+    StyledContainerStartingTop,
+    StyledScreenHeader,
+    StyledScrollView,
+    StyledFlex,
+    StyledUsername,
+} from '../../styled/Containers';
+import { DisplayRow, DisplayType } from './DisplayRows';
 
 const FollowDetails = ({ navigation, octokit, lastScreen, list, label }) => {
     const onPressUserRow = async (username) => {

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { StyledBio, UserHeader } from './search/Details';
-import { InfoContainer, StyledContainerStartingTop, StyledScrollView } from '../styled/Containers';
+import { UserHeader } from './search/Details';
+import { InfoContainer, StyledContainerStartingTop, StyledScrollView, StyledBio } from '../styled/Containers';
 import { getUserData, getUserFollowers, getUserFollowing } from '../api/Github';
 
 const Profile = ({ octokit, navigation }) => {
     const [user, setUser] = useState({});
     const [followers, setFollowers] = useState([]);
     const [following, setFollowing] = useState([]);
+    const isFollowable = user.total_private_repos ? false : user.total_private_repos === 0 ? false : true;
 
     useEffect(async () => {
         const userData = await getUserData(octokit);

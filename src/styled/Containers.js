@@ -1,6 +1,13 @@
 import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
+import { TouchableOpacity } from 'react-native';
+
+const GoBack = ({ onPress }) => (
+    <TouchableOpacity onPress={onPress}>
+        <Ionicons name="arrow-back" size={25} color="white" />
+    </TouchableOpacity>
+);
 
 const InfoContainer = ({ iconName, label = null, value = 'none' }) =>
     label !== null ? (
@@ -54,19 +61,6 @@ const StyledInfoContainer = styled.View`
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
 `;
 
-const StyledTitleContainer = styled.View`
-    display: flex;
-    flex-direction: row;
-    height: 46px;
-    width: 100%;
-    margin: 10px auto;
-    background-color: transparent;
-    align-items: center;
-    justify-content: flex-start;
-    border-bottom-width: 2px;
-    border-bottom-color: rgba(0, 0, 0, 0.7);
-`;
-
 const EmptyFlex = styled.View`
     display: flex;
     flex: 1;
@@ -94,4 +88,36 @@ const StyledScrollView = styled.ScrollView`
     width: 100%;
 `;
 
-export { StyledContainer, StyledContainerStartingTop, StyledScrollView, InfoContainer, EmptyFlex, StyledScreenHeader };
+const StyledBio = styled.Text`
+    text-align: center;
+    color: rgba(0, 0, 0, 0.5);
+    font-family: 'Montserrat_500Medium';
+    margin: 10px 0;
+`;
+
+const StyledFlex = styled.View`
+    display: flex;
+    align-items: center;
+    padding-left: -10px;
+    justify-content: center;
+    flex: 1;
+`;
+
+const StyledUsername = styled.Text`
+    font-size: 20px;
+    color: white;
+    font-family: 'Montserrat_500Medium';
+`;
+
+export {
+    StyledContainer,
+    StyledContainerStartingTop,
+    StyledScrollView,
+    InfoContainer,
+    GoBack,
+    EmptyFlex,
+    StyledScreenHeader,
+    StyledBio,
+    StyledFlex,
+    StyledUsername,
+};

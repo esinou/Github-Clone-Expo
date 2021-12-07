@@ -10,6 +10,16 @@ const searchThis = (octokit, path, q) =>
         q,
     });
 
+const followThisUser = (octokit, username) =>
+    octokit.rest.users.follow({
+        username,
+    });
+
+const unfollowThisUser = (octokit, username) =>
+    octokit.request('DELETE /user/following/{username}', {
+        username,
+    });
+
 const getByUsername = (octokit, username) =>
     octokit.rest.users.getByUsername({
         username,
@@ -59,4 +69,6 @@ export {
     getRepoWatchers,
     getUserFollowers,
     getUserFollowing,
+    followThisUser,
+    unfollowThisUser,
 };
