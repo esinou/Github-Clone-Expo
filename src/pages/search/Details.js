@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components/native';
 import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { InfoContainer, StyledContainerStartingTop, StyledScrollView } from '../styled/Containers';
+import { InfoContainer, StyledContainerStartingTop, StyledScrollView } from '../../styled/Containers';
 
 export const SearchDetailsRepo = ({ navigation, route }) => {
     const repo = route.params.repo.data;
@@ -26,103 +26,6 @@ export const SearchDetailsIssue = ({ navigation, route }) => {
 
 export const SearchDetailsUser = ({ navigation, route }) => {
     const user = route.params.user.data;
-
-    {
-        /*// "avatar_url": "https://avatars.githubusercontent.com/u/383316?v=4",*/
-    }
-    {
-        /*// "bio": null,*/
-    }
-    {
-        /*// "blog": "",*/
-    }
-    {
-        /*// "company": null,*/
-    }
-    {
-        /*// "created_at": "2010-09-01T10:39:12Z",*/
-    }
-    {
-        /*// "email": null,*/
-    }
-    {
-        /*// "events_url": "https://api.github.com/users/test/events{/privacy}",*/
-    }
-    {
-        /*//   "followers": 30,*/
-    }
-    {
-        /*//   "followers_url": "https://api.github.com/users/test/followers",*/
-    }
-    {
-        /*//   "following": 0,*/
-    }
-    {
-        /*//   "following_url": "https://api.github.com/users/test/following{/other_user}",*/
-    }
-    {
-        /*//   "gists_url": "https://api.github.com/users/test/gists{/gist_id}",*/
-    }
-    {
-        /*//   "gravatar_id": "",*/
-    }
-    {
-        /*//   "hireable": null,*/
-    }
-    {
-        /*//   "html_url": "https://github.com/test",*/
-    }
-    {
-        /*//   "id": 383316,*/
-    }
-    {
-        /*//   "location": null,*/
-    }
-    {
-        /*//   "login": "test",*/
-    }
-    {
-        /*//   "name": null,*/
-    }
-    {
-        /*//   "node_id": "MDQ6VXNlcjM4MzMxNg==",*/
-    }
-    {
-        /*//   "organizations_url": "https://api.github.com/users/test/orgs",*/
-    }
-    {
-        /*//   "public_gists": 0,*/
-    }
-    {
-        /*//   "public_repos": 5,*/
-    }
-    {
-        /*//   "received_events_url": "https://api.github.com/users/test/received_events",*/
-    }
-    {
-        /*//   "repos_url": "https://api.github.com/users/test/repos",*/
-    }
-    {
-        /*//   "site_admin": false,*/
-    }
-    {
-        /*//   "starred_url": "https://api.github.com/users/test/starred{/owner}{/repo}",*/
-    }
-    {
-        /*//   "subscriptions_url": "https://api.github.com/users/test/subscriptions",*/
-    }
-    {
-        /*//   "twitter_username": null,*/
-    }
-    {
-        /*//   "type": "User",*/
-    }
-    {
-        /*//   "updated_at": "2020-04-24T20:58:44Z",*/
-    }
-    {
-        /*//   "url": "https://api.github.com/users/test",*/
-    }
 
     const GoBack = () => (
         <TouchableOpacity onPress={() => navigation.navigate('Search')}>

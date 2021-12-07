@@ -8,7 +8,7 @@ import { HeaderOptions } from './Header';
 import Search from '../pages/Search';
 import Home from '../pages/Home';
 import Profile from '../pages/Profile';
-import { SearchDetailsIssue, SearchDetailsRepo, SearchDetailsUser } from '../pages/SearchDetails';
+import { SearchDetailsIssue, SearchDetailsRepo, SearchDetailsUser } from '../pages/search/Details';
 
 const Tab = createBottomTabNavigator();
 
