@@ -7,13 +7,8 @@ import { HeaderOptions } from './Header';
 import Search from '../pages/Search';
 import Home from '../pages/Home';
 import Profile from '../pages/Profile';
-import {
-    FollowersDetailsUser,
-    FollowingDetailsUser,
-    SearchDetailsIssue,
-    SearchDetailsRepo,
-    SearchDetailsUser,
-} from '../pages/search/Details';
+import { SearchDetailsIssue, SearchDetailsRepo, SearchDetailsUser } from '../pages/search/Details';
+import { FollowersDetailsUser, FollowingDetailsUser } from '../pages/search/Follow';
 
 const Tab = createBottomTabNavigator();
 

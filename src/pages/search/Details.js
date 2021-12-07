@@ -11,7 +11,7 @@ import {
 import { DisplayRow, DisplayType } from './DisplayRows';
 import { getByUsername, getUsersFollowers, getUsersFollowing } from '../../api/Github';
 
-const GoBack = ({ onPress }) => (
+export const GoBack = ({ onPress }) => (
     <TouchableOpacity onPress={onPress}>
         <Ionicons name="arrow-back" size={25} color="white" />
     </TouchableOpacity>
@@ -121,66 +121,6 @@ export const SearchDetailsUser = ({ navigation, route }) => {
     );
 };
 
-export const FollowersDetailsUser = ({ navigation, route }) => {
-    const { octokit, followers, lastScreen } = route.params;
-
-    const onPressUserRow = async (username) => {
-        navigation.navigate('SearchDetailsUser', {
-            user: await getByUsername(octokit, username),
-            followers: await getUsersFollowers(octokit, username),
-            following: await getUsersFollowing(octokit, username),
-            octokit: octokit,
-        });
-    };
-
-    return (
-        <>
-            <StyledScreenHeader>
-                <StyledFlex>
-                    <GoBack onPress={() => navigation.navigate(lastScreen)} />
-                </StyledFlex>
-                <StyledUsername>Followers</StyledUsername>
-                <StyledFlex />
-            </StyledScreenHeader>
-            <StyledContainerStartingTop>
-                <StyledScrollView showsVerticalScrollIndicator={false}>
-                    <DisplayRow displayType={DisplayType.user} onPressRow={onPressUserRow} list={followers} />
-                </StyledScrollView>
-            </StyledContainerStartingTop>
-        </>
-    );
-};
-
-export const FollowingDetailsUser = ({ navigation, route }) => {
-    const { octokit, following, lastScreen } = route.params;
-
-    const onPressUserRow = async (username) => {
-        navigation.navigate('SearchDetailsUser', {
-            user: await getByUsername(octokit, username),
-            followers: await getUsersFollowers(octokit, username),
-            following: await getUsersFollowing(octokit, username),
-            octokit: octokit,
-        });
-    };
-
-    return (
-        <>
-            <StyledScreenHeader>
-                <StyledFlex>
-                    <GoBack onPress={() => navigation.navigate(lastScreen)} />
-                </StyledFlex>
-                <StyledUsername>Following</StyledUsername>
-                <StyledFlex />
-            </StyledScreenHeader>
-            <StyledContainerStartingTop>
-                <StyledScrollView showsVerticalScrollIndicator={false}>
-                    <DisplayRow displayType={DisplayType.user} onPressRow={onPressUserRow} list={following} />
-                </StyledScrollView>
-            </StyledContainerStartingTop>
-        </>
-    );
-};
-
 const StyledBio = styled.Text`
     text-align: center;
     color: rgba(0, 0, 0, 0.5);
@@ -254,4 +194,4 @@ const StyledProfileHeader = styled.View`
     margin: 10px 0;
 `;
 
-export { UserHeader, StyledBio };
+export { UserHeader, StyledBio, StyledFlex, StyledUsername };
