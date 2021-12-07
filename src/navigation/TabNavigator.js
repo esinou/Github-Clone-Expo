@@ -3,7 +3,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import styled from 'styled-components/native';
 import { View } from 'react-native';
-
 import { HeaderOptions } from './Header';
 import Search from '../pages/Search';
 import Home from '../pages/Home';
@@ -81,6 +80,46 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
 };
 
 export const TabScreen = ({ octokit, navigation }) => {
+    const mainRoutesList = [
+        {
+            name: 'Home',
+            component: Home,
+            showHeader: true,
+        },
+        {
+            name: 'Search',
+            component: Search,
+            showHeader: true,
+        },
+        {
+            name: 'Profile',
+            component: Profile,
+            showHeader: false,
+        },
+    ];
+    const routesList = [
+        {
+            name: 'SearchDetailsUser',
+            component: SearchDetailsUser,
+        },
+        {
+            name: 'SearchDetailsRepo',
+            component: SearchDetailsRepo,
+        },
+        {
+            name: 'SearchDetailsIssue',
+            component: SearchDetailsIssue,
+        },
+        {
+            name: 'FollowingDetailsUser',
+            component: FollowingDetailsUser,
+        },
+        {
+            name: 'FollowersDetailsUser',
+            component: FollowersDetailsUser,
+        },
+    ];
+
     return (
         <Tab.Navigator
             tabBar={(props) => <CustomTabBar {...props} />}
@@ -89,83 +128,33 @@ export const TabScreen = ({ octokit, navigation }) => {
             }}
             screenOptions={HeaderOptions}
         >
-            <Tab.Screen
-                name="Home"
-                navigationOptions={{
-                    gesturesEnabled: false,
-                }}
-            >
-                {(props) => <Home octokit={octokit} navigation={navigation} />}
-            </Tab.Screen>
-            <Tab.Screen
-                name="Search"
-                navigationOptions={{
-                    gesturesEnabled: false,
-                }}
-            >
-                {(props) => <Search octokit={octokit} navigation={navigation} />}
-            </Tab.Screen>
-            <Tab.Screen
-                name="Profile"
-                navigationOptions={{
-                    gesturesEnabled: false,
-                }}
-                options={{
-                    headerShown: false,
-                }}
-            >
-                {(props) => <Profile octokit={octokit} navigation={navigation} />}
-            </Tab.Screen>
-            <Tab.Screen
-                name="SearchDetailsUser"
-                component={SearchDetailsUser}
-                navigationOptions={{
-                    gesturesEnabled: false,
-                }}
-                options={{
-                    headerShown: false,
-                }}
-            />
-            <Tab.Screen
-                name="SearchDetailsRepo"
-                component={SearchDetailsRepo}
-                navigationOptions={{
-                    gesturesEnabled: false,
-                }}
-                options={{
-                    headerShown: false,
-                }}
-            />
-            <Tab.Screen
-                name="SearchDetailsIssue"
-                component={SearchDetailsIssue}
-                navigationOptions={{
-                    gesturesEnabled: false,
-                }}
-                options={{
-                    headerShown: false,
-                }}
-            />
-            <Tab.Screen
-                name="FollowingDetailsUser"
-                component={FollowingDetailsUser}
-                navigationOptions={{
-                    gesturesEnabled: false,
-                }}
-                options={{
-                    headerShown: false,
-                }}
-            />
-            <Tab.Screen
-                name="FollowersDetailsUser"
-                component={FollowersDetailsUser}
-                navigationOptions={{
-                    gesturesEnabled: false,
-                }}
-                options={{
-                    headerShown: false,
-                }}
-            />
+            {mainRoutesList.map((element, index) => (
+                <Tab.Screen
+                    name={element.name}
+                    navigationOptions={{
+                        gesturesEnabled: false,
+                    }}
+                    options={{
+                        headerShown: element.showHeader,
+                    }}
+                    key={index}
+                >
+                    {(props) => <element.component octokit={octokit} navigation={navigation} />}
+                </Tab.Screen>
+            ))}
+            {routesList.map((element, index) => (
+                <Tab.Screen
+                    name={element.name}
+                    component={element.component}
+                    navigationOptions={{
+                        gesturesEnabled: false,
+                    }}
+                    options={{
+                        headerShown: false,
+                    }}
+                    key={index}
+                />
+            ))}
         </Tab.Navigator>
     );
 };
