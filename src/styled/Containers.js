@@ -2,18 +2,6 @@ import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 
-const TitleContainer = ({ iconName, label = null, value = 'none' }) =>
-    label !== null ? (
-        <StyledTitleContainer>
-            <Ionicons name={iconName} size={25} color="black" />
-            <StyledInfoLabel>{label}</StyledInfoLabel>
-            <EmptyFlex />
-            {value !== 'none' ? <StyledInfoValue>{value}</StyledInfoValue> : <></>}
-        </StyledTitleContainer>
-    ) : (
-        <></>
-    );
-
 const InfoContainer = ({ iconName, label = null, value = 'none' }) =>
     label !== null ? (
         <StyledInfoContainer>
@@ -25,6 +13,19 @@ const InfoContainer = ({ iconName, label = null, value = 'none' }) =>
     ) : (
         <></>
     );
+
+const StyledScreenHeader = styled.View`
+    display: flex;
+    height: 100px;
+    padding-top: 10px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    background-color: black;
+    flex-direction: row;
+`;
 
 const StyledInfoValue = styled.Text`
     color: rgba(0, 0, 0, 0.4);
@@ -93,4 +94,4 @@ const StyledScrollView = styled.ScrollView`
     width: 100%;
 `;
 
-export { StyledContainer, StyledContainerStartingTop, StyledScrollView, InfoContainer, TitleContainer, EmptyFlex };
+export { StyledContainer, StyledContainerStartingTop, StyledScrollView, InfoContainer, EmptyFlex, StyledScreenHeader };

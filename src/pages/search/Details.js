@@ -1,11 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components/native';
 import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { InfoContainer, StyledContainerStartingTop, StyledScrollView } from '../../styled/Containers';
+import {
+    InfoContainer,
+    StyledContainerStartingTop,
+    StyledScreenHeader,
+    StyledScrollView,
+} from '../../styled/Containers';
+import { DisplayRow, DisplayType } from './DisplayRows';
+import { getByUsername, getUsersFollowers, getUsersFollowing } from '../../api/Github';
 
-const GoBack = ({ navigate }) => (
-    <TouchableOpacity onPress={() => navigate('Search')}>
+const GoBack = ({ onPress }) => (
+    <TouchableOpacity onPress={onPress}>
         <Ionicons name="arrow-back" size={25} color="white" />
     </TouchableOpacity>
 );
@@ -31,62 +38,60 @@ export const SearchDetailsIssue = ({ navigation, route }) => {
 };
 
 const UserHeader = ({
-    navigate = null,
+    navigation,
+    goBack = true,
     lastScreen = 'Search',
     username,
-    followers,
     avatarUrl,
+    followers,
     following,
     followersCount,
     followingCount,
+    octokit,
 }) => (
     <StyledUserHeader>
         <StyledNameHeader>
-            {navigate !== null ? (
+            {goBack ? (
                 <StyledFlex>
-                    <GoBack navigate={() => navigate(lastScreen)} />
+                    <GoBack onPress={() => navigation.navigate(lastScreen)} />
                 </StyledFlex>
             ) : (
                 <></>
             )}
             <StyledUsername>{username}</StyledUsername>
-            {navigate !== null ? <StyledFlex /> : <></>}
+            {goBack ? <StyledFlex /> : <></>}
         </StyledNameHeader>
         <StyledProfileHeader>
-            <StyledNameContainer alignment="right">
-                <StyledUsername>{followers}</StyledUsername>
-                <StyledName>Followers</StyledName>
-            </StyledNameContainer>
+            <TouchableOpacity
+                onPress={() => navigation.navigate('FollowersDetailsUser', { octokit, followers, lastScreen })}
+            >
+                <StyledNameContainer alignment="right">
+                    <StyledUsername>{followersCount}</StyledUsername>
+                    <StyledName>Followers</StyledName>
+                </StyledNameContainer>
+            </TouchableOpacity>
             <StyledProfilePicture
                 source={{
                     uri: avatarUrl,
                 }}
             />
-            <StyledNameContainer alignment="left">
-                <StyledUsername>{following}</StyledUsername>
-                <StyledName>Following</StyledName>
-            </StyledNameContainer>
+            <TouchableOpacity
+                onPress={() => navigation.navigate('FollowingDetailsUser', { octokit, following, lastScreen })}
+            >
+                <StyledNameContainer alignment="left">
+                    <StyledUsername>{followingCount}</StyledUsername>
+                    <StyledName>Following</StyledName>
+                </StyledNameContainer>
+            </TouchableOpacity>
         </StyledProfileHeader>
     </StyledUserHeader>
 );
 
 export const SearchDetailsUser = ({ navigation, route }) => {
     const user = route.params.user.data;
-    const isFollowable = user.total_private_repos ? false : true;
-    const isFollowed = false;
-    const [followers, setFollowers] = useState([]);
-    const [following, setFollowing] = useState([]);
-
-    useEffect(async () => {
-        await octokit.request('GET /users/{username}/followers', {
-            username: 'username',
-        });
-
-        await octokit.request('GET /users/{username}/following', {
-            username: 'username',
-        });
-        console.log(user);
-    }, []);
+    const { octokit, followers, following } = route.params;
+    // const isFollowable = user.total_private_repos ? false : user.total_private_repos === 0 ? false : true;
+    // const isFollowed = false;
 
     return (
         <>
@@ -94,8 +99,11 @@ export const SearchDetailsUser = ({ navigation, route }) => {
                 navigation={navigation}
                 avatarUrl={user.avatar_url}
                 username={user.login}
-                followers={user.followers}
-                following={user.following}
+                followers={followers.data}
+                following={following.data}
+                followersCount={user.followers}
+                followingCount={user.following}
+                octokit={octokit}
             />
             <StyledContainerStartingTop>
                 <StyledScrollView showsVerticalScrollIndicator={false}>
@@ -107,6 +115,66 @@ export const SearchDetailsUser = ({ navigation, route }) => {
                         value={user.public_repos}
                     />
                     <InfoContainer iconName="star-outline" label="Stars" value={user.public_gists} />
+                </StyledScrollView>
+            </StyledContainerStartingTop>
+        </>
+    );
+};
+
+export const FollowersDetailsUser = ({ navigation, route }) => {
+    const { octokit, followers, lastScreen } = route.params;
+
+    const onPressUserRow = async (username) => {
+        navigation.navigate('SearchDetailsUser', {
+            user: await getByUsername(octokit, username),
+            followers: await getUsersFollowers(octokit, username),
+            following: await getUsersFollowing(octokit, username),
+            octokit: octokit,
+        });
+    };
+
+    return (
+        <>
+            <StyledScreenHeader>
+                <StyledFlex>
+                    <GoBack onPress={() => navigation.navigate(lastScreen)} />
+                </StyledFlex>
+                <StyledUsername>Followers</StyledUsername>
+                <StyledFlex />
+            </StyledScreenHeader>
+            <StyledContainerStartingTop>
+                <StyledScrollView showsVerticalScrollIndicator={false}>
+                    <DisplayRow displayType={DisplayType.user} onPressRow={onPressUserRow} list={followers} />
+                </StyledScrollView>
+            </StyledContainerStartingTop>
+        </>
+    );
+};
+
+export const FollowingDetailsUser = ({ navigation, route }) => {
+    const { octokit, following, lastScreen } = route.params;
+
+    const onPressUserRow = async (username) => {
+        navigation.navigate('SearchDetailsUser', {
+            user: await getByUsername(octokit, username),
+            followers: await getUsersFollowers(octokit, username),
+            following: await getUsersFollowing(octokit, username),
+            octokit: octokit,
+        });
+    };
+
+    return (
+        <>
+            <StyledScreenHeader>
+                <StyledFlex>
+                    <GoBack onPress={() => navigation.navigate(lastScreen)} />
+                </StyledFlex>
+                <StyledUsername>Following</StyledUsername>
+                <StyledFlex />
+            </StyledScreenHeader>
+            <StyledContainerStartingTop>
+                <StyledScrollView showsVerticalScrollIndicator={false}>
+                    <DisplayRow displayType={DisplayType.user} onPressRow={onPressUserRow} list={following} />
                 </StyledScrollView>
             </StyledContainerStartingTop>
         </>

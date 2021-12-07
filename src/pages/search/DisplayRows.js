@@ -30,14 +30,18 @@ const CategoryContainer = ({ label, children }) => {
                 width: '100%',
             }}
         >
-            <Animated.View
-                style={{
-                    width: '100%',
-                    opacity: fadeInAnim,
-                }}
-            >
-                <StyledSectionTitle>{label}</StyledSectionTitle>
-            </Animated.View>
+            {label !== '' ? (
+                <Animated.View
+                    style={{
+                        width: '100%',
+                        opacity: fadeInAnim,
+                    }}
+                >
+                    <StyledSectionTitle>{label}</StyledSectionTitle>
+                </Animated.View>
+            ) : (
+                <></>
+            )}
             <StyledSectionMap showFull={true}>{children}</StyledSectionMap>
         </View>
     );
@@ -130,7 +134,7 @@ const AnimatedRow = ({ duration, element, displayType, onPress }) => {
     );
 };
 
-const DisplayRow = ({ list, onPressRow, displayType, label }) => {
+const DisplayRow = ({ list, onPressRow, displayType, label = '' }) => {
     const [showFull, setShowFull] = useState(false);
     const [loading, setLoading] = useState(false);
     const [previewList, setPreviewList] = useState(list.length > 1 ? [list[0], list[1]] : [list[0]]);

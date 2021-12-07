@@ -4,7 +4,14 @@ import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import { StyledContainerStartingTop, StyledScrollView } from '../styled/Containers';
 import { DisplayRow, DisplayType } from './search/DisplayRows';
-import { getByUsername, getIssue, getRepository, searchThis } from '../api/Github';
+import {
+    getByUsername,
+    getIssue,
+    getRepository,
+    getUsersFollowers,
+    getUsersFollowing,
+    searchThis,
+} from '../api/Github';
 
 const Search = ({ octokit, navigation }) => {
     const [search, setSearch] = useState('');
@@ -38,6 +45,9 @@ const Search = ({ octokit, navigation }) => {
     const onPressUserRow = async (username) => {
         navigation.navigate('SearchDetailsUser', {
             user: await getByUsername(octokit, username),
+            followers: await getUsersFollowers(octokit, username),
+            following: await getUsersFollowing(octokit, username),
+            octokit: octokit,
         });
     };
 

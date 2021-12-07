@@ -21,10 +21,16 @@ const Profile = ({ octokit, navigation }) => {
     return user !== {} ? (
         <>
             <UserHeader
+                navigation={navigation}
+                goBack={false}
                 avatarUrl={user.avatar_url}
                 username={user.login}
-                followers={user.followers}
-                following={user.following}
+                followersCount={user.followers}
+                followingCount={user.following}
+                followers={followers}
+                following={following}
+                lastScreen="Profile"
+                octokit={octokit}
             />
             <StyledContainerStartingTop>
                 <StyledScrollView showsVerticalScrollIndicator={false}>

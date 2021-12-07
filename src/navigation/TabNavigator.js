@@ -8,7 +8,13 @@ import { HeaderOptions } from './Header';
 import Search from '../pages/Search';
 import Home from '../pages/Home';
 import Profile from '../pages/Profile';
-import { SearchDetailsIssue, SearchDetailsRepo, SearchDetailsUser } from '../pages/search/Details';
+import {
+    FollowersDetailsUser,
+    FollowingDetailsUser,
+    SearchDetailsIssue,
+    SearchDetailsRepo,
+    SearchDetailsUser,
+} from '../pages/search/Details';
 
 const Tab = createBottomTabNavigator();
 
@@ -133,6 +139,26 @@ export const TabScreen = ({ octokit, navigation }) => {
             <Tab.Screen
                 name="SearchDetailsIssue"
                 component={SearchDetailsIssue}
+                navigationOptions={{
+                    gesturesEnabled: false,
+                }}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <Tab.Screen
+                name="FollowingDetailsUser"
+                component={FollowingDetailsUser}
+                navigationOptions={{
+                    gesturesEnabled: false,
+                }}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <Tab.Screen
+                name="FollowersDetailsUser"
+                component={FollowersDetailsUser}
                 navigationOptions={{
                     gesturesEnabled: false,
                 }}

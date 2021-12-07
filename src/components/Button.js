@@ -9,10 +9,6 @@ export const Button = ({ onPress, label = '', icon = '' }) => (
     </StyledButton>
 );
 
-const StyledIcon = styled.Image`
-    width: 20px;
-`;
-
 const StyledButton = styled.TouchableOpacity`
     display: flex;
     background-color: black;
