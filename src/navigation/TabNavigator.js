@@ -89,7 +89,7 @@ export const TabScreen = ({ octokit, navigation }) => {
                     gesturesEnabled: false,
                 }}
             >
-                {(props) => <Home octokit={octokit} navigation={props.navigation} />}
+                {(props) => <Home octokit={octokit} navigation={navigation} />}
             </Tab.Screen>
             <Tab.Screen
                 name="Search"
@@ -97,15 +97,18 @@ export const TabScreen = ({ octokit, navigation }) => {
                     gesturesEnabled: false,
                 }}
             >
-                {(props) => <Search octokit={octokit} navigation={props.navigation} />}
+                {(props) => <Search octokit={octokit} navigation={navigation} />}
             </Tab.Screen>
             <Tab.Screen
                 name="Profile"
                 navigationOptions={{
                     gesturesEnabled: false,
                 }}
+                options={{
+                    headerShown: false,
+                }}
             >
-                {(props) => <Profile octokit={octokit} navigation={props.navigation} />}
+                {(props) => <Profile octokit={octokit} navigation={navigation} />}
             </Tab.Screen>
             <Tab.Screen
                 name="SearchDetailsUser"

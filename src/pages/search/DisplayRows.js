@@ -8,6 +8,7 @@ const DisplayType = Object.freeze({
     user: 'User',
     repo: 'Repositories',
     issue: 'Issues & PR',
+    favorite: 'Favorites',
 });
 
 const CategoryContainer = ({ label, children }) => {
@@ -52,7 +53,7 @@ const AnimatedRow = ({ duration, element, displayType, onPress }) => {
     const slideInAnim = useRef(new Animated.Value(50)).current;
 
     const DisplayUserRow = () => (
-        <StyledUserHeader>
+        <StyledHeader>
             <StyledProfilePicture
                 source={{
                     uri: element.avatar_url,
@@ -61,29 +62,43 @@ const AnimatedRow = ({ duration, element, displayType, onPress }) => {
             <StyledName>{element.login}</StyledName>
             <EmptyFlex />
             <Ionicons name="chevron-forward-outline" size={25} color="rgba(0, 0, 0, .75)" />
-        </StyledUserHeader>
+        </StyledHeader>
     );
 
     const DisplayRepoRow = () => (
-        <StyledUserHeader>
+        <StyledHeader>
             <StyledNameContainer>
                 <StyledUsername>{element.name}</StyledUsername>
                 <StyledName>{'@' + element.owner.login}</StyledName>
             </StyledNameContainer>
             <EmptyFlex />
             <Ionicons name="chevron-forward-outline" size={25} color="rgba(0, 0, 0, .75)" />
-        </StyledUserHeader>
+        </StyledHeader>
     );
 
     const DisplayIssueRow = () => (
-        <StyledUserHeader>
+        <StyledHeader>
             <StyledNameContainer>
                 <StyledUsername>{element.title}</StyledUsername>
                 <StyledName>{'@' + element.user.login}</StyledName>
             </StyledNameContainer>
             <EmptyFlex />
             <Ionicons name="chevron-forward-outline" size={25} color="rgba(0, 0, 0, .75)" />
-        </StyledUserHeader>
+        </StyledHeader>
+    );
+
+    const DisplayFavoriteRow = () => (
+        <StyledHeader>
+            <StyledIcon>
+                <Ionicons name="star" size={25} color="rgb(235, 225, 52)" />
+            </StyledIcon>
+            <StyledNameContainer>
+                <StyledUsername>{element.name}</StyledUsername>
+                <StyledName>{'@' + element.owner.login}</StyledName>
+            </StyledNameContainer>
+            <EmptyFlex />
+            <Ionicons name="chevron-forward-outline" size={25} color="rgba(0, 0, 0, .75)" />
+        </StyledHeader>
     );
 
     useEffect(() => {
@@ -109,6 +124,7 @@ const AnimatedRow = ({ duration, element, displayType, onPress }) => {
                 {displayType == DisplayType.user ? <DisplayUserRow /> : <></>}
                 {displayType == DisplayType.repo ? <DisplayRepoRow /> : <></>}
                 {displayType == DisplayType.issue ? <DisplayIssueRow /> : <></>}
+                {displayType == DisplayType.favorite ? <DisplayFavoriteRow /> : <></>}
             </Animated.View>
         </TouchableOpacity>
     );
@@ -164,6 +180,12 @@ const DisplayRow = ({ list, onPressRow, displayType, label }) => {
     );
 };
 
+const StyledIcon = styled.View`
+    display: flex;
+    margin-left: 10px;
+    margin-right: 15px;
+`;
+
 const StyledSectionTitle = styled.Text`
     color: black;
     font-size: 24px;
@@ -210,7 +232,7 @@ const StyledSectionMap = styled.View`
     display: ${({ showFull }) => (showFull ? 'flex' : 'none')};
 `;
 
-const StyledUserHeader = styled.View`
+const StyledHeader = styled.View`
     display: flex;
     width: 100%;
     margin: 0 auto;
@@ -231,4 +253,4 @@ const StyledProfilePicture = styled.Image`
     margin-right: 10px;
 `;
 
-export { DisplayRow, DisplayType };
+export { DisplayRow, DisplayType, AnimatedRow };

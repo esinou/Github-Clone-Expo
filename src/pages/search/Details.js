@@ -1,8 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/native';
 import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { InfoContainer, StyledContainerStartingTop, StyledScrollView } from '../../styled/Containers';
+
+const GoBack = ({ navigate }) => (
+    <TouchableOpacity onPress={() => navigate('Search')}>
+        <Ionicons name="arrow-back" size={25} color="white" />
+    </TouchableOpacity>
+);
 
 export const SearchDetailsRepo = ({ navigation, route }) => {
     const repo = route.params.repo.data;
@@ -24,41 +30,73 @@ export const SearchDetailsIssue = ({ navigation, route }) => {
     return <StyledContainerStartingTop></StyledContainerStartingTop>;
 };
 
+const UserHeader = ({
+    navigate = null,
+    lastScreen = 'Search',
+    username,
+    followers,
+    avatarUrl,
+    following,
+    followersCount,
+    followingCount,
+}) => (
+    <StyledUserHeader>
+        <StyledNameHeader>
+            {navigate !== null ? (
+                <StyledFlex>
+                    <GoBack navigate={() => navigate(lastScreen)} />
+                </StyledFlex>
+            ) : (
+                <></>
+            )}
+            <StyledUsername>{username}</StyledUsername>
+            {navigate !== null ? <StyledFlex /> : <></>}
+        </StyledNameHeader>
+        <StyledProfileHeader>
+            <StyledNameContainer alignment="right">
+                <StyledUsername>{followers}</StyledUsername>
+                <StyledName>Followers</StyledName>
+            </StyledNameContainer>
+            <StyledProfilePicture
+                source={{
+                    uri: avatarUrl,
+                }}
+            />
+            <StyledNameContainer alignment="left">
+                <StyledUsername>{following}</StyledUsername>
+                <StyledName>Following</StyledName>
+            </StyledNameContainer>
+        </StyledProfileHeader>
+    </StyledUserHeader>
+);
+
 export const SearchDetailsUser = ({ navigation, route }) => {
     const user = route.params.user.data;
+    const isFollowable = user.total_private_repos ? false : true;
+    const isFollowed = false;
+    const [followers, setFollowers] = useState([]);
+    const [following, setFollowing] = useState([]);
 
-    const GoBack = () => (
-        <TouchableOpacity onPress={() => navigation.navigate('Search')}>
-            <Ionicons name="arrow-back" size={25} color="white" />
-        </TouchableOpacity>
-    );
+    useEffect(async () => {
+        await octokit.request('GET /users/{username}/followers', {
+            username: 'username',
+        });
+
+        await octokit.request('GET /users/{username}/following', {
+            username: 'username',
+        });
+        console.log(user);
+    }, []);
 
     return (
         <>
-            <UserHeader>
-                <StyledNameHeader>
-                    <StyledFlex>
-                        <GoBack />
-                    </StyledFlex>
-                    <StyledUsername>{user.name}</StyledUsername>
-                    <StyledFlex />
-                </StyledNameHeader>
-                <StyledProfileHeader>
-                    <StyledNameContainer alignment="right">
-                        <StyledUsername>{user.followers}</StyledUsername>
-                        <StyledName>Followers</StyledName>
-                    </StyledNameContainer>
-                    <StyledProfilePicture
-                        source={{
-                            uri: user.avatar_url,
-                        }}
-                    />
-                    <StyledNameContainer alignment="left">
-                        <StyledUsername>{user.following}</StyledUsername>
-                        <StyledName>Following</StyledName>
-                    </StyledNameContainer>
-                </StyledProfileHeader>
-            </UserHeader>
+            <UserHeader
+                navigation={navigation}
+                avatarUrl={user.avatar_url}
+                username={user.login}
+                followers={user.followers}
+                following={user.following}
+            />
             <StyledContainerStartingTop>
                 <StyledScrollView showsVerticalScrollIndicator={false}>
                     {user.bio !== null ? <StyledBio>{user.bio}</StyledBio> : <></>}
@@ -90,7 +128,7 @@ const StyledFlex = styled.View`
     flex: 1;
 `;
 
-const UserHeader = styled.View`
+const StyledUserHeader = styled.View`
     display: flex;
     align-items: center;
     height: 200px;
@@ -127,7 +165,7 @@ const StyledProfilePicture = styled.Image`
     height: 90px;
     border-radius: 50px;
     border-width: 1px;
-    border-color: rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.2);
     margin: 12px 20px;
 `;
 
@@ -147,3 +185,5 @@ const StyledProfileHeader = styled.View`
     width: 100%;
     margin: 10px 0;
 `;
+
+export { UserHeader, StyledBio };
