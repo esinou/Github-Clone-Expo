@@ -1,29 +1,46 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components/native';
+import { Animated } from 'react-native';
 
-const Comment = ({ avatarUrl, body, owner, date }) => {
+const Comment = ({ avatarUrl, body, owner, date, duration }) => {
     const formatedDate = new Date(date);
+    const slideInAnim = useRef(new Animated.Value(50)).current;
+
+    useEffect(() => {
+        Animated.timing(slideInAnim, {
+            toValue: 0,
+            duration: duration,
+            useNativeDriver: false,
+        }).start();
+    }, [slideInAnim]);
 
     return (
-        <StyledCommentContainer>
-            <StyledCommentRow>
-                <StyledAvatar
-                    source={{
-                        uri: avatarUrl,
-                    }}
-                />
-                <StyledUsername>{owner}</StyledUsername>
-            </StyledCommentRow>
-            <StyledBodyContainer>
-                <StyledBodyText>{body}</StyledBodyText>
-            </StyledBodyContainer>
-            <StyledCommentRow alignEnd>
-                <StyledDateText>
-                    {formatedDate.getHours()}:{formatedDate.getMinutes()} {formatedDate.getDay()}/
-                    {formatedDate.getMonth()}/{formatedDate.getFullYear()}
-                </StyledDateText>
-            </StyledCommentRow>
-        </StyledCommentContainer>
+        <Animated.View
+            style={{
+                display: 'flex',
+                marginTop: slideInAnim,
+            }}
+        >
+            <StyledCommentContainer>
+                <StyledCommentRow>
+                    <StyledAvatar
+                        source={{
+                            uri: avatarUrl,
+                        }}
+                    />
+                    <StyledUsername>{owner}</StyledUsername>
+                </StyledCommentRow>
+                <StyledBodyContainer>
+                    <StyledBodyText>{body}</StyledBodyText>
+                </StyledBodyContainer>
+                <StyledCommentRow alignEnd>
+                    <StyledDateText>
+                        {formatedDate.getHours()}:{formatedDate.getMinutes()} {formatedDate.getDay()}/
+                        {formatedDate.getMonth()}/{formatedDate.getFullYear()}
+                    </StyledDateText>
+                </StyledCommentRow>
+            </StyledCommentContainer>
+        </Animated.View>
     );
 };
 
@@ -36,6 +53,7 @@ const IssueComments = ({ comments }) => {
                     body={element.body}
                     date={element.created_at}
                     owner={element.user.login}
+                    duration={500 + index * 100}
                     key={index}
                 />
             ))}
@@ -91,7 +109,7 @@ const StyledContainer = styled.View`
     flex-direction: column;
 `;
 
-const StyledCommentContainer = styled.View`
+const StyledCommentContainer = styled(Animated.View)`
     display: flex;
     flex-direction: column;
     border-width: 2px;
