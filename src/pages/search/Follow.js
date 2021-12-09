@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { getByUsername, getUsersFollowers, getUsersFollowing } from '../../api/Github';
 import {
     GoBack,
@@ -32,39 +32,37 @@ const FollowDetails = ({ navigation, octokit, lastScreen, list, label }) => {
             </StyledScreenHeader>
             <StyledContainerStartingTop>
                 <StyledScrollView showsVerticalScrollIndicator={false}>
-                    <DisplayRow displayType={DisplayType.user} onPressRow={onPressUserRow} list={list} />
+                    {list.length ? (
+                        <DisplayRow displayType={DisplayType.user} onPressRow={onPressUserRow} list={list} />
+                    ) : (
+                        <></>
+                    )}
                 </StyledScrollView>
             </StyledContainerStartingTop>
         </>
     );
 };
 
-const FollowersDetailsUser = ({ navigation, route }) => {
-    const { octokit, followers, lastScreen } = route.params;
+const UserFollowDetails = ({ navigation, route }) => {
+    const { octokit } = route.params;
+    const [lastScreen, setLastScreen] = useState(route.params.lastScreen);
+    const [label, setLabel] = useState(route.params.label);
+    const [list, setList] = useState(route.params.list);
+    const [loading, setLoading] = useState(true);
 
-    return (
-        <FollowDetails
-            octokit={octokit}
-            navigation={navigation}
-            list={followers}
-            label="Followers"
-            lastScreen={lastScreen}
-        />
+    useEffect(async () => {
+        setLoading(true);
+        await setList(route.params.list);
+        await setLastScreen(route.params.lastScreen);
+        await setLabel(route.params.label);
+        setLoading(false);
+    }, [route.params]);
+
+    return loading ? (
+        <></>
+    ) : (
+        <FollowDetails octokit={octokit} navigation={navigation} list={list} label={label} lastScreen={lastScreen} />
     );
 };
 
-const FollowingDetailsUser = ({ navigation, route }) => {
-    const { octokit, following, lastScreen } = route.params;
-
-    return (
-        <FollowDetails
-            octokit={octokit}
-            navigation={navigation}
-            list={following}
-            label="Following"
-            lastScreen={lastScreen}
-        />
-    );
-};
-
-export { FollowersDetailsUser, FollowingDetailsUser };
+export { UserFollowDetails };

@@ -8,7 +8,7 @@ import Search from '../pages/Search';
 import Home from '../pages/Home';
 import Profile from '../pages/Profile';
 import { SearchDetailsIssue, SearchDetailsRepo, SearchDetailsUser } from '../pages/search/Details';
-import { FollowersDetailsUser, FollowingDetailsUser } from '../pages/search/Follow';
+import { UserFollowDetails } from '../pages/search/Follow';
 
 const Tab = createBottomTabNavigator();
 
@@ -106,12 +106,8 @@ export const TabScreen = ({ octokit, navigation }) => {
             component: SearchDetailsIssue,
         },
         {
-            name: 'FollowingDetailsUser',
-            component: FollowingDetailsUser,
-        },
-        {
-            name: 'FollowersDetailsUser',
-            component: FollowersDetailsUser,
+            name: 'UserFollowDetails',
+            component: UserFollowDetails,
         },
     ];
 

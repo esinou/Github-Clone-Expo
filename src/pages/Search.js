@@ -17,17 +17,17 @@ const Search = ({ octokit, navigation }) => {
     const [search, setSearch] = useState('');
     const [users, setUsers] = useState([]);
     const [repos, setRepos] = useState([]);
-    const [issuesAndPullRequests, setIssuesAndPullRequests] = useState([]);
+    const [issues, setIssues] = useState([]);
 
     const searchEverything = async () => {
         if (search !== '') {
             setUsers([]);
             setRepos([]);
-            setIssuesAndPullRequests([]);
+            setIssues([]);
 
             await searchSomething('users', setUsers, search);
             await searchSomething('repos', setRepos, search);
-            await searchSomething('issuesAndPullRequests', setIssuesAndPullRequests, search);
+            await searchSomething('issuesAndPullRequests', setIssues, search);
         }
     };
 
@@ -92,12 +92,12 @@ const Search = ({ octokit, navigation }) => {
                 ) : (
                     <></>
                 )}
-                {issuesAndPullRequests.length ? (
+                {issues.length ? (
                     <DisplayRow
-                        list={issuesAndPullRequests}
+                        list={issues}
                         onPressRow={onPressIssueRow}
                         displayType={DisplayType.issue}
-                        label="Issues & PR"
+                        label="Issues"
                     />
                 ) : (
                     <></>

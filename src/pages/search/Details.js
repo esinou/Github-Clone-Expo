@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/native';
-import { InfoContainer, StyledContainerStartingTop, StyledScrollView } from '../../styled/Containers';
 import { UserHeader } from '../user/Header';
-import { StyledBio } from '../../styled/Containers';
-import { getThisRepoContent, getUserData } from '../../api/Github';
 import { RepoHeader } from '../repo/Header';
 import { RepoFiles } from '../repo/Files';
+import { StyledBio } from '../../styled/Containers';
+import { getRepoForks, getRepoWatchers, getThisRepoContent, getUserData, getUserStarred } from '../../api/Github';
+import { InfoContainer, StyledContainerStartingTop, StyledScrollView } from '../../styled/Containers';
 
 export const SearchDetailsRepo = ({ navigation, route }) => {
     const [repo, setRepo] = useState(route.params.repo.data);
@@ -15,9 +15,46 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
     const [content, setContent] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const onPressFork = async () => {
+        const forks = await getRepoForks(octokit, repo.owner.login, repo.name);
+
+        navigation.navigate('UserFollowDetails', {
+            octokit,
+            list: forks.data,
+            lastScreen,
+            label: 'Forks',
+        });
+    };
+
+    const onPressWatch = async () => {
+        const watchers = await getRepoWatchers(octokit, repo.owner.login, repo.name);
+
+        navigation.navigate('UserFollowDetails', {
+            octokit,
+            list: watchers.data,
+            lastScreen,
+            label: 'Watchers',
+        });
+    };
+
+    const repoExistsInArray = (table, repoName) => {
+        return table.some(function (el) {
+            return el.name === repoName;
+        });
+    };
+
+    const actualiseContent = async () => {
+        const content = await getThisRepoContent(octokit, repo.owner.login, repo.name);
+
+        await setContent(content.data);
+    };
+
     useEffect(async () => {
         setLoading(true);
         await setRepo(route.params.repo.data);
+        const userStarredData = await getUserStarred(octokit);
+
+        setIsStarred(repoExistsInArray(userStarredData.data, repo.name));
         await actualiseContent();
         setLoading(false);
     }, [route.params.repo]);
@@ -25,12 +62,6 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
     useEffect(() => {
         setLastScreen(route.params.lastScreen);
     }, [route.params.lastScreen]);
-
-    const actualiseContent = async () => {
-        const content = await getThisRepoContent(octokit, repo.owner.login, repo.name);
-
-        await setContent(content.data);
-    };
 
     return loading ? (
         <></>
@@ -47,6 +78,9 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
                 watchersCount={repo.watchers_count}
                 owner={repo.owner.login}
                 ownerAvatarUrl={repo.owner.avatar_url}
+                octokit={octokit}
+                onPressFork={onPressFork}
+                onPressWatch={onPressWatch}
             />
             <StyledContainerStartingTop>
                 <StyledScrollView showsVerticalScrollIndicator={false}>
@@ -63,7 +97,7 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
 };
 
 export const SearchDetailsIssue = ({ navigation, route }) => {
-    const issue = route.params.issue.data;
+    const [issue, setIssues] = useState(route.params.issue.data);
 
     useEffect(() => {
         console.log(issue);

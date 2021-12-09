@@ -1,4 +1,6 @@
 import React from 'react';
+import styled from 'styled-components/native';
+import { Ionicons } from '@expo/vector-icons';
 import {
     GoBack,
     StyledFlex,
@@ -6,8 +8,7 @@ import {
     StyledFollowContainerCount,
     StyledUsername,
 } from '../../styled/Containers';
-import styled from 'styled-components/native';
-import { Ionicons } from '@expo/vector-icons';
+import { starThisRepo, unstarThisRepo } from '../../api/Github';
 
 const RepoHeader = ({
     goBack,
@@ -20,9 +21,18 @@ const RepoHeader = ({
     watchersCount,
     owner,
     ownerAvatarUrl,
+    octokit,
+    onPressFork,
+    onPressWatch,
 }) => {
-    const starOrUnstar = () => {
-        setIsStarred(!isStarred);
+    const starOrUnstar = async () => {
+        if (isStarred) {
+            await starThisRepo(octokit, owner, repoName);
+            setIsStarred(false);
+        } else {
+            await unstarThisRepo(octokit, owner, repoName);
+            setIsStarred(true);
+        }
     };
 
     return (
@@ -47,16 +57,16 @@ const RepoHeader = ({
                 <StyledOwnerName>{owner}</StyledOwnerName>
             </StyledRowContainer>
             <StyledRowContainer>
-                <StyledFollowContainer onPress={starOrUnstar}>
+                <StyledFollowContainer onPress={onPressFork}>
                     <Ionicons name="git-branch-outline" size={18} color="black" />
                     <StyledFollowContainerCount>
                         <StyledCount>{forksCount}</StyledCount>
                     </StyledFollowContainerCount>
                 </StyledFollowContainer>
                 <StyledFollowContainer onPress={starOrUnstar}>
-                    <Ionicons name={isStarred ? 'star' : 'star-outline'} size={18} color="black" />
+                    <Ionicons name={!isStarred ? 'star' : 'star-outline'} size={18} color="black" />
                 </StyledFollowContainer>
-                <StyledFollowContainer onPress={starOrUnstar}>
+                <StyledFollowContainer onPress={onPressWatch}>
                     <Ionicons name="eye-outline" size={18} color="black" />
                     <StyledFollowContainerCount>
                         <StyledCount>{watchersCount}</StyledCount>

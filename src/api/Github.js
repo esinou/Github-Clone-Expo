@@ -1,8 +1,13 @@
-const getRepoWatchers = (octokit, owner, repo, per_page) =>
-    octokit.request('GET /repos/{owner}/{repo}/subscribers', {
+const getRepoWatchers = (octokit, owner, repo) =>
+    octokit.rest.activity.listWatchersForRepo({
         owner,
         repo,
-        per_page,
+    });
+
+const getRepoForks = (octokit, owner, repo) =>
+    octokit.rest.repos.listForks({
+        owner,
+        repo,
     });
 
 const getThisRepoContent = (octokit, owner, repo) =>
@@ -89,6 +94,7 @@ export {
     getUserIssues,
     getUserStarred,
     getRepoWatchers,
+    getRepoForks,
     getUserFollowers,
     getUserFollowing,
     followThisUser,

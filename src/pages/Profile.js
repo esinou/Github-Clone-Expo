@@ -7,7 +7,6 @@ const Profile = ({ octokit, navigation }) => {
     const [user, setUser] = useState({});
     const [followers, setFollowers] = useState([]);
     const [following, setFollowing] = useState([]);
-    const isFollowable = user.total_private_repos ? false : user.total_private_repos === 0 ? false : true;
 
     useEffect(async () => {
         const userData = await getUserData(octokit);
@@ -32,6 +31,7 @@ const Profile = ({ octokit, navigation }) => {
                 following={following}
                 lastScreen="Profile"
                 octokit={octokit}
+                isFollowable={false}
             />
             <StyledContainerStartingTop>
                 <StyledScrollView showsVerticalScrollIndicator={false}>

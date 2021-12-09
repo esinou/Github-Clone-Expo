@@ -46,7 +46,14 @@ const UserHeader = ({
             </StyledNameHeader>
             <StyledProfileHeader>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('FollowersDetailsUser', { octokit, followers, lastScreen })}
+                    onPress={() =>
+                        navigation.navigate('UserFollowDetails', {
+                            octokit,
+                            list: followers,
+                            lastScreen,
+                            label: 'Followers',
+                        })
+                    }
                 >
                     <StyledNameContainer alignment="right">
                         <StyledUsername>{followersCount}</StyledUsername>
@@ -59,7 +66,14 @@ const UserHeader = ({
                     }}
                 />
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('FollowingDetailsUser', { octokit, following, lastScreen })}
+                    onPress={() =>
+                        navigation.navigate('UserFollowDetails', {
+                            octokit,
+                            list: following,
+                            lastScreen,
+                            label: 'Followers',
+                        })
+                    }
                 >
                     <StyledNameContainer alignment="left">
                         <StyledUsername>{followingCount}</StyledUsername>
