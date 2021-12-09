@@ -6,6 +6,7 @@ import { RepoFiles } from '../repo/Files';
 import { StyledBio } from '../../styled/Containers';
 import { getRepoForks, getRepoWatchers, getThisRepoContent, getUserData, getUserStarred } from '../../api/Github';
 import { InfoContainer, StyledContainerStartingTop, StyledScrollView } from '../../styled/Containers';
+import { IssueHeader } from '../issue/Header';
 
 export const SearchDetailsRepo = ({ navigation, route }) => {
     const [repo, setRepo] = useState(route.params.repo.data);
@@ -97,13 +98,36 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
 };
 
 export const SearchDetailsIssue = ({ navigation, route }) => {
-    const [issue, setIssues] = useState(route.params.issue.data);
+    const [issue, setIssue] = useState(route.params.issue);
+    const [repo, setRepo] = useState({});
+    const [lastScreen, setLastScreen] = useState('Search');
+    const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        console.log(issue);
-    }, []);
+    useEffect(async () => {
+        setLoading(true);
+        await setIssue(route.params.issue);
+        await setRepo(route.params.repo.data);
+        await setLastScreen(route.params.lastScreen);
+        setLoading(false);
+    }, [route.params.issue]);
 
-    return <StyledContainerStartingTop></StyledContainerStartingTop>;
+    return loading ? (
+        <></>
+    ) : (
+        <>
+            <IssueHeader
+                goBack={true}
+                navigation={navigation}
+                repoName={repo.name}
+                lastScreen={lastScreen}
+                owner={repo.owner.login}
+                ownerAvatarUrl={repo.owner.avatar_url}
+            />
+            <StyledContainerStartingTop>
+                <StyledScrollView showsVerticalScrollIndicator={false}></StyledScrollView>
+            </StyledContainerStartingTop>
+        </>
+    );
 };
 
 export const SearchDetailsUser = ({ navigation, route }) => {

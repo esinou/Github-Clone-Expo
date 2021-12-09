@@ -53,7 +53,7 @@ const AnimatedRow = ({ duration, element, displayType, onPress }) => {
             ? () => onPress(element.login)
             : displayType === DisplayType.repo || displayType === DisplayType.favorite
             ? () => onPress(element.owner.login, element.name)
-            : () => onPress(element.user.login, element.repository_url, element.number);
+            : () => onPress(element, element.repository_url);
     const slideInAnim = useRef(new Animated.Value(50)).current;
 
     const DisplayUserRow = () => (

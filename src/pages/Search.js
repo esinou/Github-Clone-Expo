@@ -60,9 +60,13 @@ const Search = ({ octokit, navigation }) => {
         });
     };
 
-    const onPressIssueRow = async (owner, repo, issue_number) => {
+    const onPressIssueRow = async (issue, repo_url) => {
+        const repo = await octokit.request(`GET ${repo_url}`);
+
         navigation.navigate('SearchDetailsIssue', {
-            issue: await getIssue(octokit, owner, repo, issue_number),
+            issue,
+            repo,
+            lastScreen: 'Search',
         });
     };
 
