@@ -21,6 +21,8 @@ const Home = ({ octokit, navigation }) => {
         const userIssues = await getUserIssues(octokit);
         const userFavorites = await getUserStarred(octokit);
 
+        console.log(userFavorites.data);
+
         setRepos(userRepos.data);
         setIssues(userIssues.data);
         setFavorites(userFavorites.data);
