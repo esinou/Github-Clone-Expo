@@ -99,7 +99,6 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
 };
 
 export const SearchDetailsIssue = ({ navigation, route }) => {
-    const { octokit } = route.params;
     const [issue, setIssue] = useState(route.params.issue);
     const [repo, setRepo] = useState({});
     const [lastScreen, setLastScreen] = useState('Search');
@@ -112,9 +111,8 @@ export const SearchDetailsIssue = ({ navigation, route }) => {
         await setRepo(route.params.repo);
         await setComments(route.params.comments);
         await setLastScreen(route.params.lastScreen);
-        console.log(comments);
         setLoading(false);
-    }, [route.params.issue]);
+    }, [route.params]);
 
     return loading ? (
         <></>
@@ -127,15 +125,26 @@ export const SearchDetailsIssue = ({ navigation, route }) => {
                 lastScreen={lastScreen}
                 owner={repo.owner.login}
                 ownerAvatarUrl={repo.owner.avatar_url}
+                state={issue.state}
+                statusDate={issue.updated_at}
             />
             <StyledContainerStartingTop>
                 <StyledScrollView showsVerticalScrollIndicator={false}>
+                    <StyledIssueTitle>{issue.title}</StyledIssueTitle>
                     <IssueComments comments={comments} />
                 </StyledScrollView>
             </StyledContainerStartingTop>
         </>
     );
 };
+
+const StyledIssueTitle = styled.Text`
+    color: rgb(0, 0, 0);
+    font-size: 20px;
+    margin: 10px 0;
+    text-align: center;
+    font-family: 'Montserrat_500Medium';
+`;
 
 export const SearchDetailsUser = ({ navigation, route }) => {
     const user = route.params.user.data;

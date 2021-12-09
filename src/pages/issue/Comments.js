@@ -67,10 +67,8 @@ const StyledBodyText = styled.Text`
     font-family: 'Montserrat_500Medium';
 `;
 
-const StyledDateText = styled.Text`
-    color: rgba(0, 0, 0, 0.5);
+const StyledDateText = styled(StyledBodyText)`
     font-size: 12px;
-    font-family: 'Montserrat_500Medium';
 `;
 
 const StyledBodyContainer = styled.View`
