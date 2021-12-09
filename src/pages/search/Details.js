@@ -7,6 +7,7 @@ import { StyledBio } from '../../styled/Containers';
 import { getRepoForks, getRepoWatchers, getThisRepoContent, getUserData, getUserStarred } from '../../api/Github';
 import { InfoContainer, StyledContainerStartingTop, StyledScrollView } from '../../styled/Containers';
 import { IssueHeader } from '../issue/Header';
+import { IssueComments } from '../issue/Comments';
 
 export const SearchDetailsRepo = ({ navigation, route }) => {
     const [repo, setRepo] = useState(route.params.repo.data);
@@ -98,16 +99,20 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
 };
 
 export const SearchDetailsIssue = ({ navigation, route }) => {
+    const { octokit } = route.params;
     const [issue, setIssue] = useState(route.params.issue);
     const [repo, setRepo] = useState({});
     const [lastScreen, setLastScreen] = useState('Search');
+    const [comments, setComments] = useState(route.params.comments);
     const [loading, setLoading] = useState(true);
 
     useEffect(async () => {
         setLoading(true);
         await setIssue(route.params.issue);
-        await setRepo(route.params.repo.data);
+        await setRepo(route.params.repo);
+        await setComments(route.params.comments);
         await setLastScreen(route.params.lastScreen);
+        console.log(comments);
         setLoading(false);
     }, [route.params.issue]);
 
@@ -124,7 +129,9 @@ export const SearchDetailsIssue = ({ navigation, route }) => {
                 ownerAvatarUrl={repo.owner.avatar_url}
             />
             <StyledContainerStartingTop>
-                <StyledScrollView showsVerticalScrollIndicator={false}></StyledScrollView>
+                <StyledScrollView showsVerticalScrollIndicator={false}>
+                    <IssueComments comments={comments} />
+                </StyledScrollView>
             </StyledContainerStartingTop>
         </>
     );

@@ -1,3 +1,5 @@
+const octokitGETRequest = (octokit, request) => octokit.request(`GET ${request}`);
+
 const getRepoWatchers = (octokit, owner, repo) =>
     octokit.rest.activity.listWatchersForRepo({
         owner,
@@ -80,6 +82,7 @@ const getUserFollowers = (octokit) => octokit.request('GET /user/followers');
 const getUserFollowing = (octokit) => octokit.request('GET /user/following');
 
 export {
+    octokitGETRequest,
     getThisRepoContent,
     unstarThisRepo,
     starThisRepo,
