@@ -1,23 +1,59 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
+import { Animated } from 'react-native';
+
+const FileRow = ({ duration, isLast, iconName, index, name }) => {
+    const slideInAnim = useRef(new Animated.Value(50)).current;
+
+    useEffect(() => {
+        Animated.timing(slideInAnim, {
+            toValue: 0,
+            duration: duration,
+            useNativeDriver: false,
+        }).start();
+    }, [slideInAnim]);
+
+    return (
+        <StyledContentRow
+            key={index}
+            isLast={isLast}
+            style={{
+                marginTop: slideInAnim,
+            }}
+        >
+            <StyledItemContainer>
+                <Ionicons name={iconName} size={25} color="#3880ff" />
+            </StyledItemContainer>
+            <StyledItemContainer>
+                <StyledItemTitle>{name}</StyledItemTitle>
+            </StyledItemContainer>
+        </StyledContentRow>
+    );
+};
 
 const RepoFiles = ({ content }) => {
+    const slideInAnim = useRef(new Animated.Value(50)).current;
+
+    useEffect(() => {
+        Animated.timing(slideInAnim, {
+            toValue: 0,
+            duration: 750,
+            useNativeDriver: false,
+        }).start();
+    }, [slideInAnim]);
+
     return (
         <StyledContentContainer>
             {content.map((element, index) => (
-                <StyledContentRow key={index} isLast={index === content.length - 1}>
-                    <StyledItemContainer>
-                        <Ionicons
-                            name={element.type === 'dir' ? 'folder-open' : 'document-outline'}
-                            size={25}
-                            color="#3880ff"
-                        />
-                    </StyledItemContainer>
-                    <StyledItemContainer>
-                        <StyledItemTitle>{element.name}</StyledItemTitle>
-                    </StyledItemContainer>
-                </StyledContentRow>
+                <FileRow
+                    duration={500 + index * 50}
+                    index={index}
+                    isLast={index === content.length - 1}
+                    iconName={element.type === 'dir' ? 'folder-open' : 'document-outline'}
+                    name={element.name}
+                    key={index}
+                />
             ))}
         </StyledContentContainer>
     );
@@ -36,7 +72,7 @@ const StyledItemContainer = styled.View`
     margin-left: 15px;
 `;
 
-const StyledContentRow = styled.View`
+const StyledContentRow = styled(Animated.View)`
     display: flex;
     width: 100%;
     height: 40px;

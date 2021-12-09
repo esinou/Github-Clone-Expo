@@ -12,6 +12,7 @@ const Home = ({ octokit, navigation }) => {
         navigation.navigate('SearchDetailsRepo', {
             repo: await getRepository(octokit, owner, repo),
             octokit,
+            lastScreen: 'Home',
         });
     };
 

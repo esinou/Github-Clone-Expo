@@ -48,6 +48,7 @@ const Search = ({ octokit, navigation }) => {
             followers: await getUsersFollowers(octokit, username),
             following: await getUsersFollowing(octokit, username),
             octokit: octokit,
+            lastScreen: 'Search',
         });
     };
 
@@ -55,6 +56,7 @@ const Search = ({ octokit, navigation }) => {
         navigation.navigate('SearchDetailsRepo', {
             repo: await getRepository(octokit, owner, repo),
             octokit,
+            lastScreen: 'Search',
         });
     };
 

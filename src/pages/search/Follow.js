@@ -17,6 +17,7 @@ const FollowDetails = ({ navigation, octokit, lastScreen, list, label }) => {
             followers: await getUsersFollowers(octokit, username),
             following: await getUsersFollowing(octokit, username),
             octokit: octokit,
+            lastScreen,
         });
     };
 
