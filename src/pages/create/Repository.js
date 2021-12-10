@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { View } from 'react-native';
 import styled from 'styled-components/native';
 import {
     GoBack,
@@ -11,7 +10,7 @@ import {
 } from '../../styled/Containers';
 import { Input } from '../../components/Input';
 import { Button } from '../../components/Button';
-import { createRepo, getUserData } from '../../api/Github';
+import { createRepo } from '../../api/Github';
 import { Loading } from '../../components/Loading';
 import { Checkbox } from '../../components/Checkbox';
 
@@ -21,13 +20,14 @@ export const CreateRepository = ({ navigation, route }) => {
     const [description, setDescription] = useState('');
     const [isPrivate, setIsPrivate] = useState(true);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
     const createNewRepository = async () => {
         try {
-            const req = await createRepo(octokit, repository, description, isPrivate);
-            console.log(req);
+            setError(false);
+            await createRepo(octokit, repository, description, isPrivate);
         } catch (e) {
-            console.log(e);
+            setError(e.message);
         }
     };
 
@@ -64,8 +64,17 @@ export const CreateRepository = ({ navigation, route }) => {
                     />
                     <Checkbox value={isPrivate} setValue={setIsPrivate} label="Repository is private ?" />
                     <Button label="Create" onPress={createNewRepository} />
+                    {error !== '' ? <StyledErrorLabel>{error}</StyledErrorLabel> : <></>}
                 </StyledScrollView>
             </StyledContainerStartingTop>
         </>
     );
 };
+
+const StyledErrorLabel = styled.Text`
+    color: rgba(255, 0, 0, 0.5);
+    font-size: 14px;
+    font-family: 'Montserrat_500Medium';
+    margin-top: 10px;
+    text-align: center;
+`;
