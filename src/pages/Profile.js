@@ -1,24 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import { UserHeader } from './search/Details';
-import { InfoContainer, StyledContainerStartingTop, StyledScrollView, StyledBio } from '../styled/Containers';
-import { getUserData, getUserFollowers, getUserFollowing } from '../api/Github';
+import { StyledContainerStartingTop, StyledScrollView, StyledBio } from '../styled/Containers';
+import { getUserData, getUserFollowers, getUserFollowing, getUserStarred } from '../api/Github';
+import { UserProfile } from './user/Profile';
 
 const Profile = ({ octokit, navigation }) => {
     const [user, setUser] = useState({});
     const [followers, setFollowers] = useState([]);
     const [following, setFollowing] = useState([]);
+    const [starred, setStarred] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(async () => {
+        setLoading(true);
         const userData = await getUserData(octokit);
         const userFollowers = await getUserFollowers(octokit);
         const userFollowing = await getUserFollowing(octokit);
+        const userStarred = await getUserStarred(octokit);
 
         setUser(userData.data);
         setFollowers(userFollowers.data);
         setFollowing(userFollowing.data);
+        setStarred(userStarred.data);
+        setLoading(false);
     }, []);
 
-    return user !== {} ? (
+    const onPressStars = () => {
+        navigation.navigate('UserRepositoriesDetails', {
+            octokit,
+            list: starred,
+            lastScreen: 'Profile',
+            label: 'Starred',
+        });
+    };
+
+    return !loading ? (
         <>
             <UserHeader
                 navigation={navigation}
@@ -35,19 +51,7 @@ const Profile = ({ octokit, navigation }) => {
             />
             <StyledContainerStartingTop>
                 <StyledScrollView showsVerticalScrollIndicator={false}>
-                    {user.bio !== null ? <StyledBio>{user.bio}</StyledBio> : <></>}
-                    <InfoContainer iconName="business-outline" label={user.company} />
-                    <InfoContainer
-                        iconName="file-tray-full-outline"
-                        label="Public repositories"
-                        value={user.public_repos}
-                    />
-                    <InfoContainer
-                        iconName="lock-closed-outline"
-                        label="Private repositories"
-                        value={user.total_private_repos}
-                    />
-                    <InfoContainer iconName="star-outline" label="Stars" value={user.public_gists} />
+                    <UserProfile octokit={octokit} navigation={navigation} user={user} starred={starred} />
                 </StyledScrollView>
             </StyledContainerStartingTop>
         </>

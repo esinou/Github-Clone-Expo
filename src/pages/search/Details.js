@@ -4,10 +4,18 @@ import { UserHeader } from '../user/Header';
 import { RepoHeader } from '../repo/Header';
 import { RepoFiles } from '../repo/Files';
 import { StyledBio } from '../../styled/Containers';
-import { getRepoForks, getRepoWatchers, getThisRepoContent, getUserData, getUserStarred } from '../../api/Github';
-import { InfoContainer, StyledContainerStartingTop, StyledScrollView } from '../../styled/Containers';
+import {
+    getRepoForks,
+    getRepoStarredByUser,
+    getRepoWatchers,
+    getThisRepoContent,
+    getUserData,
+    getUserStarred,
+} from '../../api/Github';
+import { StyledContainerStartingTop, StyledScrollView } from '../../styled/Containers';
 import { IssueHeader } from '../issue/Header';
 import { IssueComments } from '../issue/Comments';
+import { UserProfile } from '../user/Profile';
 
 export const SearchDetailsRepo = ({ navigation, route }) => {
     const [repo, setRepo] = useState(route.params.repo.data);
@@ -151,6 +159,7 @@ export const SearchDetailsUser = ({ navigation, route }) => {
     const { octokit, followers, following } = route.params;
     const [isFollowed, setIsFollowed] = useState(false);
     const [isFollowable, setIsFollowable] = useState(false);
+    const [starred, setStarred] = useState([]);
     const [loading, setLoading] = useState(true);
     const [lastScreen, setLastScreen] = useState(route.params.lastScreen);
 
@@ -166,7 +175,9 @@ export const SearchDetailsUser = ({ navigation, route }) => {
 
     useEffect(async () => {
         const thisUser = await getUserData(octokit);
+        const starredData = await getRepoStarredByUser(octokit, user.login);
 
+        await setStarred(starredData.data);
         await setIsFollowable(thisUser.data.login !== user.login);
         await setIsFollowed(userExistsInArray(followers.data, thisUser.data.login));
         setLoading(false);
@@ -192,26 +203,7 @@ export const SearchDetailsUser = ({ navigation, route }) => {
             />
             <StyledContainerStartingTop>
                 <StyledScrollView showsVerticalScrollIndicator={false}>
-                    {user.bio !== null ? <StyledBio>{user.bio}</StyledBio> : <></>}
-                    {user.name !== null && user.name !== '' ? <InfoContainer iconName="at" label={user.name} /> : <></>}
-                    <InfoContainer iconName="business-outline" label={user.company} />
-                    <InfoContainer
-                        iconName="file-tray-full-outline"
-                        label="Public repositories"
-                        value={user.public_repos}
-                    />
-                    <InfoContainer iconName="star-outline" label="Stars" value={user.public_gists} />
-                    {user.twitter_username !== null ? (
-                        <InfoContainer iconName="logo-twitter" label={user.twitter_username} />
-                    ) : (
-                        <></>
-                    )}
-                    {user.blog !== null && user.blog !== '' ? (
-                        <InfoContainer iconName="newspaper-outline" label={user.blog} />
-                    ) : (
-                        <></>
-                    )}
-                    {user.email !== null ? <InfoContainer iconName="mail-outline" label={user.email} /> : <></>}
+                    <UserProfile user={user} navigation={navigation} octokit={octokit} starred={starred} />
                 </StyledScrollView>
             </StyledContainerStartingTop>
         </>

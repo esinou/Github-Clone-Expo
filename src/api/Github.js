@@ -24,6 +24,11 @@ const searchThis = (octokit, path, q) =>
         q,
     });
 
+const getRepoStarredByUser = (octokit, username) =>
+    octokit.rest.activity.listReposStarredByUser({
+        username,
+    });
+
 const starThisRepo = (octokit, owner, repo) =>
     octokit.rest.activity.starRepoForAuthenticatedUser({
         owner,
@@ -84,6 +89,7 @@ const getUserFollowing = (octokit) => octokit.request('GET /user/following');
 export {
     octokitGETRequest,
     getThisRepoContent,
+    getRepoStarredByUser,
     unstarThisRepo,
     starThisRepo,
     searchThis,
