@@ -5,12 +5,14 @@ import { RepoHeader } from '../repo/Header';
 import { RepoFiles } from '../repo/Files';
 import { StyledBio } from '../../styled/Containers';
 import {
+    getRepoBranches,
     getRepoForks,
     getRepoStarredByUser,
     getRepoWatchers,
     getThisRepoContent,
     getUserData,
     getUserStarred,
+    octokitGETRequest,
 } from '../../api/Github';
 import { StyledContainerStartingTop, StyledScrollView } from '../../styled/Containers';
 import { IssueHeader } from '../issue/Header';
@@ -18,6 +20,7 @@ import { IssueComments } from '../issue/Comments';
 import { UserProfile } from '../user/Profile';
 import { Loading } from '../../components/Loading';
 import { Ionicons } from '@expo/vector-icons';
+import { Picker } from 'react-native';
 
 export const SearchDetailsRepo = ({ navigation, route }) => {
     const [repo, setRepo] = useState(route.params.repo.data);
@@ -25,7 +28,8 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
     const { octokit } = route.params;
     const [isStarred, setIsStarred] = useState(false);
     const [content, setContent] = useState([]);
-    const [branches, setBranches] = useState(route.params.repo.data.default_branch);
+    const [branches, setBranches] = useState([route.params.repo.data.default_branch]);
+    const [currentBranch, setCurrentBranch] = useState(route.params.repo.data.default_branch);
     const [path, setPath] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -57,6 +61,8 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
         });
     };
 
+    const changeBranch = () => {};
+
     const actualiseContent = async (owner, name, path = '') => {
         try {
             const content = await getThisRepoContent(octokit, owner, name, path);
@@ -80,9 +86,21 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
     useEffect(async () => {
         setLoading(true);
         setRepo(route.params.repo.data);
+        console.log(route.params.repo.data);
         setPath('');
         setLastScreen(route.params.lastScreen);
+        setCurrentBranch(route.params.repo.data.default_branch);
+        try {
+            const branchesData = await getRepoBranches(
+                octokit,
+                route.params.repo.data.owner.login,
+                route.params.repo.data.name
+            );
 
+            console.log(branchesData.data);
+        } catch (e) {
+            console.log(e);
+        }
         const userStarredData = await getUserStarred(octokit);
 
         setIsStarred(repoExistsInArray(userStarredData.data, route.params.repo.data.name));
@@ -111,9 +129,9 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
             />
             <StyledContainerStartingTop>
                 <StyledScrollView showsVerticalScrollIndicator={false}>
-                    <StyledRowContainer>
-                        <StyledTextLabel>Default branch:</StyledTextLabel>
-                        <StyledTextValue>{repo.default_branch}</StyledTextValue>
+                    <StyledRowContainer onPress={changeBranch}>
+                        <StyledTextLabel>Current branch:</StyledTextLabel>
+                        <StyledTextValue>{currentBranch}</StyledTextValue>
                     </StyledRowContainer>
                     <StyledBio>{repo.description}</StyledBio>
                     {path !== '' ? (
@@ -254,7 +272,7 @@ const StyledTextLabel = styled(StyledTextValue)`
     color: rgba(0, 0, 0, 0.5);
 `;
 
-const StyledRowContainer = styled.View`
+const StyledRowContainer = styled.TouchableOpacity`
     display: flex;
     flex-direction: row;
     width: 100%;

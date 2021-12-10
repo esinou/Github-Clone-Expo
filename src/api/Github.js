@@ -24,7 +24,13 @@ const getRepoForks = (octokit, owner, repo) =>
         repo,
     });
 
-const getThisRepoBranch = (octokit, owner, repo, branch) =>
+const getRepoBranches = (octokit, owner, repo) =>
+    octokit.rest.repos.listBranches({
+        owner,
+        repo,
+    });
+
+const getRepoBranch = (octokit, owner, repo, branch) =>
     octokit.rest.repos.getBranch({
         owner,
         repo,
@@ -106,7 +112,8 @@ const getUserFollowers = (octokit) => octokit.request('GET /user/followers');
 const getUserFollowing = (octokit) => octokit.request('GET /user/following');
 
 export {
-    getThisRepoBranch,
+    getRepoBranches,
+    getRepoBranch,
     createRepo,
     deleteRepo,
     octokitGETRequest,
