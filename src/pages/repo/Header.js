@@ -64,7 +64,7 @@ const RepoHeader = ({
                     </StyledFollowContainerCount>
                 </StyledFollowContainer>
                 <StyledFollowContainer onPress={starOrUnstar}>
-                    <Ionicons name={!isStarred ? 'star' : 'star-outline'} size={18} color="black" />
+                    <Ionicons name={isStarred ? 'star' : 'star-outline'} size={18} color="black" />
                 </StyledFollowContainer>
                 <StyledFollowContainer onPress={onPressWatch}>
                     <Ionicons name="eye-outline" size={18} color="black" />

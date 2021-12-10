@@ -37,11 +37,12 @@ const getRepoBranch = (octokit, owner, repo, branch) =>
         branch,
     });
 
-const getThisRepoContent = (octokit, owner, repo, path = '') =>
+const getThisRepoContent = (octokit, owner, repo, path = '', ref) =>
     octokit.rest.repos.getContent({
         owner,
         repo,
         path,
+        ref,
     });
 
 const searchThis = (octokit, path, q) =>

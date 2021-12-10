@@ -5,6 +5,7 @@ import { RepoHeader } from '../repo/Header';
 import { RepoFiles } from '../repo/Files';
 import { StyledBio } from '../../styled/Containers';
 import {
+    getRepoBranch,
     getRepoBranches,
     getRepoForks,
     getRepoStarredByUser,
@@ -20,7 +21,7 @@ import { IssueComments } from '../issue/Comments';
 import { UserProfile } from '../user/Profile';
 import { Loading } from '../../components/Loading';
 import { Ionicons } from '@expo/vector-icons';
-import { Picker } from 'react-native';
+import { Picker } from '@react-native-community/picker';
 
 export const SearchDetailsRepo = ({ navigation, route }) => {
     const [repo, setRepo] = useState(route.params.repo.data);
@@ -61,11 +62,9 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
         });
     };
 
-    const changeBranch = () => {};
-
-    const actualiseContent = async (owner, name, path = '') => {
+    const actualiseContent = async (owner, name, path = '', branch) => {
         try {
-            const content = await getThisRepoContent(octokit, owner, name, path);
+            const content = await getThisRepoContent(octokit, owner, name, path, branch);
 
             await setContent(content.data);
         } catch (e) {
@@ -75,18 +74,21 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
 
     const resetPath = async () => {
         setPath('');
-        await actualiseContent(repo.owner.login, repo.name, '');
+        await actualiseContent(repo.owner.login, repo.name, '', currentBranch);
     };
 
     const enterThisFolder = async (folder) => {
         setPath(path + (path === '' ? '' : '/') + folder);
-        await actualiseContent(repo.owner.login, repo.name, path + (path === '' ? '' : '/') + folder);
+        await actualiseContent(repo.owner.login, repo.name, path + (path === '' ? '' : '/') + folder, currentBranch);
     };
+
+    useEffect(async () => {
+        await actualiseContent(repo.owner.login, repo.name, path, currentBranch);
+    }, [currentBranch]);
 
     useEffect(async () => {
         setLoading(true);
         setRepo(route.params.repo.data);
-        console.log(route.params.repo.data);
         setPath('');
         setLastScreen(route.params.lastScreen);
         setCurrentBranch(route.params.repo.data.default_branch);
@@ -97,14 +99,19 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
                 route.params.repo.data.name
             );
 
-            console.log(branchesData.data);
+            setBranches(branchesData.data);
         } catch (e) {
             console.log(e);
         }
         const userStarredData = await getUserStarred(octokit);
 
         setIsStarred(repoExistsInArray(userStarredData.data, route.params.repo.data.name));
-        await actualiseContent(route.params.repo.data.owner.login, route.params.repo.data.name, '');
+        await actualiseContent(
+            route.params.repo.data.owner.login,
+            route.params.repo.data.name,
+            '',
+            route.params.repo.data.default_branch
+        );
         setLoading(false);
     }, [route.params]);
 
@@ -129,9 +136,18 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
             />
             <StyledContainerStartingTop>
                 <StyledScrollView showsVerticalScrollIndicator={false}>
-                    <StyledRowContainer onPress={changeBranch}>
+                    <StyledRowContainer>
                         <StyledTextLabel>Current branch:</StyledTextLabel>
-                        <StyledTextValue>{currentBranch}</StyledTextValue>
+                        <Picker
+                            selectedValue={currentBranch}
+                            style={{ height: 50, width: 100, fontFamily: 'Montserrat_500Medium' }}
+                            onValueChange={(el, i) => setCurrentBranch(el)}
+                        >
+                            {branches.map((element, index) => (
+                                <Picker.Item label={element.name} value={element.name} key={index} />
+                            ))}
+                        </Picker>
+                        {/*<StyledTextValue>{currentBranch}</StyledTextValue>*/}
                     </StyledRowContainer>
                     <StyledBio>{repo.description}</StyledBio>
                     {path !== '' ? (
@@ -272,7 +288,7 @@ const StyledTextLabel = styled(StyledTextValue)`
     color: rgba(0, 0, 0, 0.5);
 `;
 
-const StyledRowContainer = styled.TouchableOpacity`
+const StyledRowContainer = styled.View`
     display: flex;
     flex-direction: row;
     width: 100%;
