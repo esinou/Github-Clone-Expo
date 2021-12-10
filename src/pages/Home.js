@@ -1,20 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { DisplayRow, DisplayType } from './search/DisplayRows';
-import { StyledContainerStartingTop, StyledScrollView } from '../styled/Containers';
-import { getRepository, getUserIssues, getUserRepos, getUserStarred } from '../api/Github';
 import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
 import { RefreshControl } from 'react-native';
+import { DisplayRow, DisplayType } from './search/DisplayRows';
+import { StyledContainerStartingTop, StyledScrollView } from '../styled/Containers';
+import { getRepository, getUserData, getUserRepos, getUserStarred, octokitGETRequest } from '../api/Github';
 
 const Home = ({ octokit, navigation }) => {
     const [repos, setRepos] = useState([]);
     const [issues, setIssues] = useState([]);
+    const [pulls, setPulls] = useState([]);
     const [favorites, setFavorites] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
-
-    useEffect(async () => {
-        await getAllUserData();
-    }, []);
 
     const onRefresh = useCallback(async () => {
         setRefreshing(true);
@@ -30,17 +27,56 @@ const Home = ({ octokit, navigation }) => {
         });
     };
 
+    const onPressIssueRow = async (issue, repo_url) => {
+        const repo = await octokit.request(`GET ${repo_url}`);
+        const comments = await octokit.request(`GET ${issue.comments_url}`);
+
+        navigation.navigate('SearchDetailsIssue', {
+            issue,
+            repo: repo.data,
+            comments: comments.data,
+            octokit,
+            lastScreen: 'Home',
+        });
+    };
+
+    const getUserIssuesAndPR = (repos) => {
+        let issuesUrlList = [];
+        let pullsUrlList = [];
+
+        repos.forEach((element) => {
+            if (element.open_issues_count > 0) {
+                issuesUrlList.push(`https://api.github.com/repos/${element.owner.login}/${element.name}/issues`);
+                pullsUrlList.push(`https://api.github.com/repos/${element.owner.login}/${element.name}/pulls`);
+            }
+        });
+
+        const promise = issuesUrlList.map(async (element) => {
+            const repoIssues = await octokitGETRequest(octokit, element);
+
+            return repoIssues.data;
+        });
+
+        Promise.all(promise).then((result) => {
+            setIssues(
+                result.reduce((prev, curr) => {
+                    return [...prev, ...curr];
+                })
+            );
+        });
+    };
+
     const getAllUserData = async () => {
         await setRepos([]);
         await setIssues([]);
         await setFavorites([]);
 
         const userRepos = await getUserRepos(octokit);
-        const userIssues = await getUserIssues(octokit);
         const userFavorites = await getUserStarred(octokit);
 
+        getUserIssuesAndPR(userRepos.data);
+
         setRepos(userRepos.data);
-        setIssues(userIssues.data);
         setFavorites(userFavorites.data);
     };
 
@@ -49,6 +85,10 @@ const Home = ({ octokit, navigation }) => {
             octokit,
         });
     };
+
+    useEffect(async () => {
+        await getAllUserData();
+    }, []);
 
     return (
         <StyledContainerStartingTop>
@@ -69,7 +109,7 @@ const Home = ({ octokit, navigation }) => {
                 {issues.length ? (
                     <DisplayRow
                         list={issues}
-                        onPressRow={onPressRepoRow}
+                        onPressRow={onPressIssueRow}
                         displayType={DisplayType.issue}
                         label="My issues"
                     />

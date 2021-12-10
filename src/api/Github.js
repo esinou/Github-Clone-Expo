@@ -45,6 +45,12 @@ const getThisRepoContent = (octokit, owner, repo, path = '', ref) =>
         ref,
     });
 
+const searchPullsRequest = (octokit, q, username) =>
+    octokit.rest.search.issuesAndPullRequests({
+        // q: q + `+is:pull-request+state:open+author:${username}&order=asc`, +author:esinou+is:pull-request+state:open&sort=created&order=asc
+        q: 'Work+is:pull-request+state:open+author:esinou',
+    });
+
 const searchThis = (octokit, path, q) =>
     octokit.rest.search[path]({
         q,
@@ -107,12 +113,12 @@ const getUsersFollowers = (octokit, username) =>
 
 const getUserData = (octokit) => octokit.request('GET /user');
 const getUserRepos = (octokit) => octokit.request('GET /user/repos');
-const getUserIssues = (octokit) => octokit.request('GET /user/issues');
 const getUserStarred = (octokit) => octokit.request('GET /user/starred');
 const getUserFollowers = (octokit) => octokit.request('GET /user/followers');
 const getUserFollowing = (octokit) => octokit.request('GET /user/following');
 
 export {
+    searchPullsRequest,
     getRepoBranches,
     getRepoBranch,
     createRepo,
@@ -130,7 +136,6 @@ export {
     getUsersFollowers,
     getUserData,
     getUserRepos,
-    getUserIssues,
     getUserStarred,
     getRepoWatchers,
     getRepoForks,
