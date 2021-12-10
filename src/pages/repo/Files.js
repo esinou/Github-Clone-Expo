@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Animated } from 'react-native';
+import { Loading } from '../../components/Loading';
 
 const FileRow = ({ duration, isLast, iconName, index, name }) => {
     const slideInAnim = useRef(new Animated.Value(50)).current;
@@ -43,7 +44,9 @@ const RepoFiles = ({ content }) => {
         }).start();
     }, [slideInAnim]);
 
-    return (
+    return content === [] ? (
+        <Loading />
+    ) : (
         <StyledContentContainer>
             {content.map((element, index) => (
                 <FileRow

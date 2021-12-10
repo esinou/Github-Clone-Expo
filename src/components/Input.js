@@ -44,7 +44,7 @@ const StyledInput = styled.View`
     border-width: 2px;
     border-color: rgba(0, 0, 0, 0.1);
     margin-bottom: 10px;
-    padding: 0 12px;
+    padding: 5px 15px;
     align-items: center;
     justify-content: flex-start;
     height: ${({ isBig }) => (isBig ? '150px' : '50px')};

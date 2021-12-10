@@ -1,14 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { DisplayRow, DisplayType } from './search/DisplayRows';
 import { StyledContainerStartingTop, StyledScrollView } from '../styled/Containers';
 import { getRepository, getUserIssues, getUserRepos, getUserStarred } from '../api/Github';
 import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
+import { RefreshControl } from 'react-native';
 
 const Home = ({ octokit, navigation }) => {
     const [repos, setRepos] = useState([]);
     const [issues, setIssues] = useState([]);
     const [favorites, setFavorites] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
+
+    useEffect(async () => {
+        await getAllUserData();
+    }, []);
+
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        await getAllUserData();
+        setRefreshing(false);
+    }, []);
 
     const onPressRepoRow = async (owner, repo) => {
         navigation.navigate('SearchDetailsRepo', {
@@ -18,7 +30,7 @@ const Home = ({ octokit, navigation }) => {
         });
     };
 
-    useEffect(async () => {
+    const getAllUserData = async () => {
         const userRepos = await getUserRepos(octokit);
         const userIssues = await getUserIssues(octokit);
         const userFavorites = await getUserStarred(octokit);
@@ -26,7 +38,7 @@ const Home = ({ octokit, navigation }) => {
         setRepos(userRepos.data);
         setIssues(userIssues.data);
         setFavorites(userFavorites.data);
-    }, []);
+    };
 
     const navigateToCreateRepo = () => {
         navigation.navigate('CreateRepository', {
@@ -36,7 +48,10 @@ const Home = ({ octokit, navigation }) => {
 
     return (
         <StyledContainerStartingTop>
-            <StyledScrollView showsVerticalScrollIndicator={false}>
+            <StyledScrollView
+                showsVerticalScrollIndicator={false}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            >
                 {repos.length ? (
                     <DisplayRow
                         list={repos}

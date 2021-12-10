@@ -10,7 +10,7 @@ import {
 } from '../../styled/Containers';
 import { Input } from '../../components/Input';
 import { Button } from '../../components/Button';
-import { createRepo } from '../../api/Github';
+import { createRepo, getRepository } from '../../api/Github';
 import { Loading } from '../../components/Loading';
 import { Checkbox } from '../../components/Checkbox';
 
@@ -23,9 +23,15 @@ export const CreateRepository = ({ navigation, route }) => {
     const [error, setError] = useState('');
 
     const createNewRepository = async () => {
+        setError(false);
         try {
-            setError(false);
-            await createRepo(octokit, repository, description, isPrivate);
+            const repo = await createRepo(octokit, repository, description, isPrivate);
+
+            navigation.navigate('SearchDetailsRepo', {
+                repo,
+                octokit,
+                lastScreen: 'Home',
+            });
         } catch (e) {
             setError(e.message);
         }

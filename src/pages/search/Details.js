@@ -55,9 +55,13 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
     };
 
     const actualiseContent = async () => {
-        const content = await getThisRepoContent(octokit, repo.owner.login, repo.name);
+        try {
+            const content = await getThisRepoContent(octokit, repo.owner.login, repo.name);
 
-        await setContent(content.data);
+            await setContent(content.data);
+        } catch (e) {
+            setContent([]);
+        }
     };
 
     useEffect(async () => {
