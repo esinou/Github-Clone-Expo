@@ -4,14 +4,7 @@ import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import { StyledContainerStartingTop, StyledScrollView } from '../styled/Containers';
 import { DisplayRow, DisplayType } from './search/DisplayRows';
-import {
-    getByUsername,
-    getIssue,
-    getRepository,
-    getUsersFollowers,
-    getUsersFollowing,
-    searchThis,
-} from '../api/Github';
+import { getByUsername, getRepository, getUsersFollowers, getUsersFollowing, searchThis } from '../api/Github';
 
 const Search = ({ octokit, navigation }) => {
     const [search, setSearch] = useState('');

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { UserHeader } from './search/Details';
-import { StyledContainerStartingTop, StyledScrollView, StyledBio } from '../styled/Containers';
+import { StyledContainerStartingTop, StyledScrollView } from '../styled/Containers';
 import { getUserData, getUserFollowers, getUserFollowing, getUserStarred } from '../api/Github';
 import { UserProfile } from './user/Profile';
 import { Loading } from '../components/Loading';
@@ -25,15 +25,6 @@ const Profile = ({ octokit, navigation }) => {
         setStarred(userStarred.data);
         setLoading(false);
     }, []);
-
-    const onPressStars = () => {
-        navigation.navigate('UserRepositoriesDetails', {
-            octokit,
-            list: starred,
-            lastScreen: 'Profile',
-            label: 'Starred',
-        });
-    };
 
     return loading ? (
         <Loading />

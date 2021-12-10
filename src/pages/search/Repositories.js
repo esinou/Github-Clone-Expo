@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getByUsername, getRepository, getUsersFollowers, getUsersFollowing } from '../../api/Github';
+import { getRepository } from '../../api/Github';
 import {
     GoBack,
     StyledContainerStartingTop,
