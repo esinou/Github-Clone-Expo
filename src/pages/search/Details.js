@@ -25,9 +25,9 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
     const { octokit } = route.params;
     const [isStarred, setIsStarred] = useState(false);
     const [content, setContent] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [branches, setBranches] = useState(route.params.repo.data.default_branch);
     const [path, setPath] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const onPressFork = async () => {
         const forks = await getRepoForks(octokit, repo.owner.login, repo.name);
@@ -57,9 +57,9 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
         });
     };
 
-    const actualiseContent = async (path = '') => {
+    const actualiseContent = async (owner, name, path = '') => {
         try {
-            const content = await getThisRepoContent(octokit, repo.owner.login, repo.name, path);
+            const content = await getThisRepoContent(octokit, owner, name, path);
 
             await setContent(content.data);
         } catch (e) {
@@ -69,29 +69,26 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
 
     const resetPath = async () => {
         setPath('');
-        await actualiseContent('');
+        await actualiseContent(repo.owner.login, repo.name, '');
     };
 
     const enterThisFolder = async (folder) => {
         setPath(path + (path === '' ? '' : '/') + folder);
-        await actualiseContent(path + (path === '' ? '' : '/') + folder);
+        await actualiseContent(repo.owner.login, repo.name, path + (path === '' ? '' : '/') + folder);
     };
 
     useEffect(async () => {
         setLoading(true);
+        setRepo(route.params.repo.data);
         setPath('');
-        await setRepo(route.params.repo.data);
+        setLastScreen(route.params.lastScreen);
 
         const userStarredData = await getUserStarred(octokit);
 
-        setIsStarred(repoExistsInArray(userStarredData.data, repo.name));
-        await actualiseContent();
+        setIsStarred(repoExistsInArray(userStarredData.data, route.params.repo.data.name));
+        await actualiseContent(route.params.repo.data.owner.login, route.params.repo.data.name, '');
         setLoading(false);
-    }, [route.params.repo]);
-
-    useEffect(() => {
-        setLastScreen(route.params.lastScreen);
-    }, [route.params.lastScreen]);
+    }, [route.params]);
 
     return loading ? (
         <Loading />
