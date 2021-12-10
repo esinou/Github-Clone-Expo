@@ -29,7 +29,9 @@ const Home = ({ octokit, navigation }) => {
     }, []);
 
     const navigateToCreateRepo = () => {
-        navigation.navigate('CreateRepository');
+        navigation.navigate('CreateRepository', {
+            octokit,
+        });
     };
 
     return (

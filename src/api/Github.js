@@ -1,10 +1,10 @@
 const octokitGETRequest = (octokit, request) => octokit.request(`GET ${request}`);
 
-const createRepo = (octokit, owner, repo, name) =>
-    octokit.rest.projects.createForRepo({
-        owner,
-        repo,
+const createRepo = (octokit, name, description, isPrivate) =>
+    octokit.rest.repos.createForAuthenticatedUser({
         name,
+        description,
+        private: isPrivate,
     });
 
 const deleteRepo = (octokit, project_id) =>
