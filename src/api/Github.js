@@ -24,11 +24,11 @@ const getRepoForks = (octokit, owner, repo) =>
         repo,
     });
 
-const getThisRepoContent = (octokit, owner, repo) =>
+const getThisRepoContent = (octokit, owner, repo, path = '') =>
     octokit.rest.repos.getContent({
         owner,
         repo,
-        path: '',
+        path,
     });
 
 const searchThis = (octokit, path, q) =>

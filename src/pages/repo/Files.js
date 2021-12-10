@@ -3,8 +3,9 @@ import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Animated } from 'react-native';
 import { Loading } from '../../components/Loading';
+import { TouchableOpacity } from 'react-native';
 
-const FileRow = ({ duration, isLast, iconName, index, name }) => {
+const FileRow = ({ duration, isLast, iconName, index, name, isFolder, onUpdatePath }) => {
     const slideInAnim = useRef(new Animated.Value(50)).current;
 
     useEffect(() => {
@@ -15,6 +16,12 @@ const FileRow = ({ duration, isLast, iconName, index, name }) => {
         }).start();
     }, [slideInAnim]);
 
+    const onPressPath = () => {
+        if (isFolder) {
+            onUpdatePath(name);
+        }
+    };
+
     return (
         <StyledContentRow
             key={index}
@@ -23,17 +30,25 @@ const FileRow = ({ duration, isLast, iconName, index, name }) => {
                 marginTop: slideInAnim,
             }}
         >
-            <StyledItemContainer>
-                <Ionicons name={iconName} size={25} color="#3880ff" />
-            </StyledItemContainer>
-            <StyledItemContainer>
-                <StyledItemTitle>{name}</StyledItemTitle>
-            </StyledItemContainer>
+            <StyledTouchableRow onPress={onPressPath}>
+                <StyledItemContainer>
+                    <Ionicons name={iconName} size={25} color="#3880ff" />
+                </StyledItemContainer>
+                <StyledItemContainer>
+                    <StyledItemTitle>{name}</StyledItemTitle>
+                </StyledItemContainer>
+            </StyledTouchableRow>
         </StyledContentRow>
     );
 };
 
-const RepoFiles = ({ content }) => {
+const StyledTouchableRow = styled.TouchableOpacity`
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+`;
+
+const RepoFiles = ({ content, onUpdatePath }) => {
     const slideInAnim = useRef(new Animated.Value(50)).current;
 
     useEffect(() => {
@@ -54,7 +69,9 @@ const RepoFiles = ({ content }) => {
                     index={index}
                     isLast={index === content.length - 1}
                     iconName={element.type === 'dir' ? 'folder-open' : 'document-outline'}
+                    isFolder={element.type === 'dir'}
                     name={element.name}
+                    onUpdatePath={onUpdatePath}
                     key={index}
                 />
             ))}
