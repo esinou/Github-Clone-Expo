@@ -9,6 +9,7 @@ import {
     StyledUsername,
 } from '../../styled/Containers';
 import { DisplayRow, DisplayType } from './DisplayRows';
+import { Loading } from '../../components/Loading';
 
 const RepositoriesDetails = ({ navigation, octokit, lastScreen, list, label }) => {
     const onPressRepoRow = async (owner, repo) => {
@@ -57,7 +58,7 @@ const UserRepositoriesDetails = ({ navigation, route }) => {
     }, [route.params]);
 
     return loading ? (
-        <></>
+        <Loading />
     ) : (
         <RepositoriesDetails
             octokit={octokit}

@@ -16,6 +16,7 @@ import { StyledContainerStartingTop, StyledScrollView } from '../../styled/Conta
 import { IssueHeader } from '../issue/Header';
 import { IssueComments } from '../issue/Comments';
 import { UserProfile } from '../user/Profile';
+import { Loading } from '../../components/Loading';
 
 export const SearchDetailsRepo = ({ navigation, route }) => {
     const [repo, setRepo] = useState(route.params.repo.data);
@@ -74,7 +75,7 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
     }, [route.params.lastScreen]);
 
     return loading ? (
-        <></>
+        <Loading />
     ) : (
         <>
             <RepoHeader
@@ -123,7 +124,7 @@ export const SearchDetailsIssue = ({ navigation, route }) => {
     }, [route.params]);
 
     return loading ? (
-        <></>
+        <Loading />
     ) : (
         <>
             <IssueHeader
@@ -184,7 +185,7 @@ export const SearchDetailsUser = ({ navigation, route }) => {
     }, []);
 
     return loading ? (
-        <></>
+        <Loading />
     ) : (
         <>
             <UserHeader

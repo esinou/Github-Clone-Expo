@@ -9,6 +9,7 @@ import {
     StyledUsername,
 } from '../../styled/Containers';
 import { DisplayRow, DisplayType } from './DisplayRows';
+import { Loading } from '../../components/Loading';
 
 const FollowDetails = ({ navigation, octokit, lastScreen, list, label }) => {
     const onPressUserRow = async (username) => {
@@ -59,7 +60,7 @@ const UserFollowDetails = ({ navigation, route }) => {
     }, [route.params]);
 
     return loading ? (
-        <></>
+        <Loading />
     ) : (
         <FollowDetails octokit={octokit} navigation={navigation} list={list} label={label} lastScreen={lastScreen} />
     );

@@ -3,6 +3,7 @@ import { UserHeader } from './search/Details';
 import { StyledContainerStartingTop, StyledScrollView, StyledBio } from '../styled/Containers';
 import { getUserData, getUserFollowers, getUserFollowing, getUserStarred } from '../api/Github';
 import { UserProfile } from './user/Profile';
+import { Loading } from '../components/Loading';
 
 const Profile = ({ octokit, navigation }) => {
     const [user, setUser] = useState({});
@@ -34,7 +35,9 @@ const Profile = ({ octokit, navigation }) => {
         });
     };
 
-    return !loading ? (
+    return loading ? (
+        <Loading />
+    ) : (
         <>
             <UserHeader
                 navigation={navigation}
@@ -55,8 +58,6 @@ const Profile = ({ octokit, navigation }) => {
                 </StyledScrollView>
             </StyledContainerStartingTop>
         </>
-    ) : (
-        <></>
     );
 };
 
