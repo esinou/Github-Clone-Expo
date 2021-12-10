@@ -1,5 +1,17 @@
 const octokitGETRequest = (octokit, request) => octokit.request(`GET ${request}`);
 
+const createRepo = (octokit, owner, repo, name) =>
+    octokit.rest.projects.createForRepo({
+        owner,
+        repo,
+        name,
+    });
+
+const deleteRepo = (octokit, project_id) =>
+    octokit.rest.projects.delete({
+        project_id,
+    });
+
 const getRepoWatchers = (octokit, owner, repo) =>
     octokit.rest.activity.listWatchersForRepo({
         owner,
@@ -87,6 +99,8 @@ const getUserFollowers = (octokit) => octokit.request('GET /user/followers');
 const getUserFollowing = (octokit) => octokit.request('GET /user/following');
 
 export {
+    createRepo,
+    deleteRepo,
     octokitGETRequest,
     getThisRepoContent,
     getRepoStarredByUser,
