@@ -5,7 +5,6 @@ import { RepoHeader } from '../repo/Header';
 import { RepoFiles } from '../repo/Files';
 import { StyledBio } from '../../styled/Containers';
 import {
-    getRepoBranch,
     getRepoBranches,
     getRepoForks,
     getRepoStarredByUser,
@@ -13,7 +12,6 @@ import {
     getThisRepoContent,
     getUserData,
     getUserStarred,
-    octokitGETRequest,
 } from '../../api/Github';
 import { StyledContainerStartingTop, StyledScrollView } from '../../styled/Containers';
 import { IssueHeader } from '../issue/Header';
@@ -22,6 +20,7 @@ import { UserProfile } from '../user/Profile';
 import { Loading } from '../../components/Loading';
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-community/picker';
+import { PullMergeText } from '../issue/Merge';
 
 export const SearchDetailsRepo = ({ navigation, route }) => {
     const [repo, setRepo] = useState(route.params.repo.data);
@@ -147,7 +146,6 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
                                 <Picker.Item label={element.name} value={element.name} key={index} />
                             ))}
                         </Picker>
-                        {/*<StyledTextValue>{currentBranch}</StyledTextValue>*/}
                     </StyledRowContainer>
                     <StyledBio>{repo.description}</StyledBio>
                     {path !== '' ? (
@@ -207,6 +205,47 @@ export const SearchDetailsIssue = ({ navigation, route }) => {
             <StyledContainerStartingTop>
                 <StyledScrollView showsVerticalScrollIndicator={false}>
                     <StyledIssueTitle>{issue.title}</StyledIssueTitle>
+                    <IssueComments comments={comments} />
+                </StyledScrollView>
+            </StyledContainerStartingTop>
+        </>
+    );
+};
+
+export const SearchDetailsPull = ({ navigation, route }) => {
+    const [pull, setPull] = useState(route.params.issue);
+    const [lastScreen, setLastScreen] = useState('Search');
+    const [comments, setComments] = useState(route.params.comments);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(async () => {
+        setLoading(true);
+        console.log(route.params.pull);
+        await setPull(route.params.pull);
+        await setComments(route.params.comments);
+        await setLastScreen(route.params.lastScreen);
+        setLoading(false);
+    }, [route.params]);
+
+    return loading ? (
+        <Loading />
+    ) : (
+        <>
+            <IssueHeader
+                goBack={true}
+                navigation={navigation}
+                repoName={pull.base.repo.name}
+                lastScreen={lastScreen}
+                owner={pull.base.repo.owner.login}
+                ownerAvatarUrl={pull.base.repo.owner.avatar_url}
+                state={pull.state}
+                statusDate={pull.updated_at}
+            />
+            <StyledContainerStartingTop>
+                <StyledScrollView showsVerticalScrollIndicator={false}>
+                    <StyledIssueTitle>{pull.title}</StyledIssueTitle>
+                    {pull.body !== null ? <StyledBio>{pull.body}</StyledBio> : <></>}
+                    <PullMergeText author={pull.user.login} base={pull.base.ref} head={pull.head.ref} />
                     <IssueComments comments={comments} />
                 </StyledScrollView>
             </StyledContainerStartingTop>

@@ -7,7 +7,7 @@ import { HeaderOptions } from './Header';
 import Search from '../pages/Search';
 import Home from '../pages/Home';
 import Profile from '../pages/Profile';
-import { SearchDetailsIssue, SearchDetailsRepo, SearchDetailsUser } from '../pages/search/Details';
+import { SearchDetailsIssue, SearchDetailsPull, SearchDetailsRepo, SearchDetailsUser } from '../pages/search/Details';
 import { UserFollowDetails } from '../pages/search/Follow';
 import { UserRepositoriesDetails } from '../pages/search/Repositories';
 import { CreateRepository } from '../pages/create/Repository';
@@ -110,6 +110,10 @@ export const TabScreen = ({ octokit, navigation }) => {
         {
             name: 'UserFollowDetails',
             component: UserFollowDetails,
+        },
+        {
+            name: 'SearchDetailsPull',
+            component: SearchDetailsPull,
         },
         {
             name: 'UserRepositoriesDetails',

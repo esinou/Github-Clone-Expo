@@ -7,7 +7,8 @@ import { Ionicons } from '@expo/vector-icons';
 const DisplayType = Object.freeze({
     user: 'User',
     repo: 'Repositories',
-    issue: 'Issues & PR',
+    issue: 'Issues',
+    pull: 'Pull requests',
     favorite: 'Favorites',
 });
 
@@ -53,7 +54,9 @@ const AnimatedRow = ({ duration, element, displayType, onPress }) => {
             ? () => onPress(element.login)
             : displayType === DisplayType.repo || displayType === DisplayType.favorite
             ? () => onPress(element.owner.login, element.name)
-            : () => onPress(element, element.repository_url);
+            : DisplayType.issue
+            ? () => onPress(element, element.repository_url)
+            : onPress(element);
     const slideInAnim = useRef(new Animated.Value(50)).current;
 
     const DisplayUserRow = () => (
@@ -81,6 +84,17 @@ const AnimatedRow = ({ duration, element, displayType, onPress }) => {
     );
 
     const DisplayIssueRow = () => (
+        <StyledHeader>
+            <StyledNameContainer>
+                <StyledUsername>{element.title}</StyledUsername>
+                <StyledName>{'@' + element.user.login}</StyledName>
+            </StyledNameContainer>
+            <EmptyFlex />
+            <Ionicons name="chevron-forward-outline" size={25} color="rgba(0, 0, 0, .75)" />
+        </StyledHeader>
+    );
+
+    const DisplayPullRow = () => (
         <StyledHeader>
             <StyledNameContainer>
                 <StyledUsername>{element.title}</StyledUsername>
@@ -128,6 +142,7 @@ const AnimatedRow = ({ duration, element, displayType, onPress }) => {
                 {displayType == DisplayType.user ? <DisplayUserRow /> : <></>}
                 {displayType == DisplayType.repo ? <DisplayRepoRow /> : <></>}
                 {displayType == DisplayType.issue ? <DisplayIssueRow /> : <></>}
+                {displayType == DisplayType.pull ? <DisplayPullRow /> : <></>}
                 {displayType == DisplayType.favorite ? <DisplayFavoriteRow /> : <></>}
             </Animated.View>
         </TouchableOpacity>
@@ -178,7 +193,7 @@ const DisplayRow = ({ list, onPressRow, displayType, label = '' }) => {
                     )}
                 </StyledLoadingContainer>
             ) : (
-                <></>
+                <StyledFakeSpace />
             )}
         </CategoryContainer>
     );
@@ -202,6 +217,12 @@ const StyledLoadingText = styled.Text`
     font-size: 16px;
     font-family: 'Montserrat_500Medium';
     margin: 0 10px;
+`;
+
+const StyledFakeSpace = styled.View`
+    display: flex;
+    height: 50px;
+    width: 100%;
 `;
 
 const StyledLoadingContainer = styled.TouchableOpacity`

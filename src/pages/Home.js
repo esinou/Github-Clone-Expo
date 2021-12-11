@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { RefreshControl } from 'react-native';
 import { DisplayRow, DisplayType } from './search/DisplayRows';
 import { StyledContainerStartingTop, StyledScrollView } from '../styled/Containers';
-import { getRepository, getUserData, getUserRepos, getUserStarred, octokitGETRequest } from '../api/Github';
+import { getPullRequest, getRepository, getUserRepos, getUserStarred, octokitGETRequest } from '../api/Github';
 
 const Home = ({ octokit, navigation }) => {
     const [repos, setRepos] = useState([]);
@@ -40,6 +40,17 @@ const Home = ({ octokit, navigation }) => {
         });
     };
 
+    const onPressPullRow = async (pull) => {
+        const comments = await octokit.request(`GET ${pull.comments_url}`);
+
+        navigation.navigate('SearchDetailsPull', {
+            pull,
+            comments: comments.data,
+            octokit,
+            lastScreen: 'Home',
+        });
+    };
+
     const getUserIssuesAndPR = (repos) => {
         let issuesUrlList = [];
         let pullsUrlList = [];
@@ -51,14 +62,28 @@ const Home = ({ octokit, navigation }) => {
             }
         });
 
-        const promise = issuesUrlList.map(async (element) => {
+        const issuesPromise = issuesUrlList.map(async (element) => {
             const repoIssues = await octokitGETRequest(octokit, element);
 
             return repoIssues.data;
         });
 
-        Promise.all(promise).then((result) => {
+        const pullsPromise = pullsUrlList.map(async (element) => {
+            const repoPulls = await octokitGETRequest(octokit, element);
+
+            return repoPulls.data;
+        });
+
+        Promise.all(issuesPromise).then((result) => {
             setIssues(
+                result.reduce((prev, curr) => {
+                    return [...prev, ...curr];
+                })
+            );
+        });
+
+        Promise.all(pullsPromise).then((result) => {
+            setPulls(
                 result.reduce((prev, curr) => {
                     return [...prev, ...curr];
                 })
@@ -112,6 +137,16 @@ const Home = ({ octokit, navigation }) => {
                         onPressRow={onPressIssueRow}
                         displayType={DisplayType.issue}
                         label="My issues"
+                    />
+                ) : (
+                    <></>
+                )}
+                {pulls.length ? (
+                    <DisplayRow
+                        list={pulls}
+                        onPressRow={onPressPullRow}
+                        displayType={DisplayType.pull}
+                        label="My pull requests"
                     />
                 ) : (
                     <></>
