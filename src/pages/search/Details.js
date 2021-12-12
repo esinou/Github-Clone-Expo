@@ -6,6 +6,7 @@ import { RepoFiles } from '../repo/Files';
 import { StyledBio } from '../../styled/Containers';
 import {
     commentThisIssue,
+    deleteRepo,
     getRepoBranches,
     getRepoForks,
     getRepoStarredByUser,
@@ -26,6 +27,7 @@ import { Picker } from '@react-native-community/picker';
 import { PullMergeText } from '../issue/Merge';
 import { CommentSection } from '../issue/Comment';
 import { Button } from '../../components/Button';
+import { RepoDangerZone } from '../repo/DangerZone';
 
 export const SearchDetailsRepo = ({ navigation, route }) => {
     const [repo, setRepo] = useState(route.params.repo.data);
@@ -97,6 +99,17 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
 
     const onClickCreatePR = async () => {
         navigation.navigate();
+    };
+
+    const onClickDeleteRepo = async () => {
+        if (repo.name === 'test') {
+            try {
+                await deleteRepo(octokit, repo.owner.login, repo.name);
+                navigation.navigate('Home');
+            } catch (e) {
+                console.log(e);
+            }
+        }
     };
 
     useEffect(async () => {
@@ -179,6 +192,7 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
                         <></>
                     )}
                     <RepoFiles content={content} onUpdatePath={enterThisFolder} />
+                    <RepoDangerZone onPressDeleteRepo={onClickDeleteRepo} />
                 </StyledScrollView>
             </StyledContainerStartingTop>
         </>

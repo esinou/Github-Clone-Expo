@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components/native';
 import {
     GoBack,
@@ -10,8 +10,7 @@ import {
 } from '../../styled/Containers';
 import { Input } from '../../components/Input';
 import { Button } from '../../components/Button';
-import { createRepo, getRepository } from '../../api/Github';
-import { Loading } from '../../components/Loading';
+import { createRepo } from '../../api/Github';
 import { Checkbox } from '../../components/Checkbox';
 
 export const CreateRepository = ({ navigation, route }) => {
@@ -19,7 +18,6 @@ export const CreateRepository = ({ navigation, route }) => {
     const [repository, setRepository] = useState('');
     const [description, setDescription] = useState('');
     const [isPrivate, setIsPrivate] = useState(true);
-    const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
     const createNewRepository = async () => {
@@ -37,9 +35,7 @@ export const CreateRepository = ({ navigation, route }) => {
         }
     };
 
-    return loading ? (
-        <Loading />
-    ) : (
+    return (
         <>
             <StyledScreenHeader>
                 <StyledFlex>

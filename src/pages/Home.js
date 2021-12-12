@@ -97,6 +97,7 @@ const Home = ({ octokit, navigation }) => {
         await setFavorites([]);
 
         const userRepos = await getUserRepos(octokit);
+        console.log(userRepos.data);
         const userFavorites = await getUserStarred(octokit);
 
         getUserIssuesAndPR(userRepos.data);

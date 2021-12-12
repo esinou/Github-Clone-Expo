@@ -276,4 +276,4 @@ const StyledProfilePicture = styled.Image`
     margin-right: 10px;
 `;
 
-export { DisplayRow, DisplayType, AnimatedRow };
+export { DisplayRow, DisplayType, AnimatedRow, StyledLoadingContainer, StyledLoadingText };

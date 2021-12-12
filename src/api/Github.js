@@ -38,9 +38,10 @@ const createRepo = (octokit, name, description, isPrivate) =>
         private: isPrivate,
     });
 
-const deleteRepo = (octokit, project_id) =>
-    octokit.rest.projects.delete({
-        project_id,
+const deleteRepo = (octokit, owner, repo) =>
+    octokit.rest.repos.delete({
+        owner,
+        repo,
     });
 
 const getRepoWatchers = (octokit, owner, repo) =>
@@ -144,7 +145,7 @@ const getUsersFollowers = (octokit, username) =>
     });
 
 const getUserData = (octokit) => octokit.request('GET /user');
-const getUserRepos = (octokit) => octokit.request('GET /user/repos');
+const getUserRepos = (octokit) => octokit.request('GET /user/repos', { per_page: 100 });
 const getUserStarred = (octokit) => octokit.request('GET /user/starred');
 const getUserFollowers = (octokit) => octokit.request('GET /user/followers');
 const getUserFollowing = (octokit) => octokit.request('GET /user/following');

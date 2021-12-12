@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
 
-export const Button = ({ onPress, label = '', icon = '', isHalf = false }) => (
-    <StyledButton onPress={onPress} isHalf={isHalf}>
+export const Button = ({ onPress, label = '', icon = '', isHalf = false, danger = false }) => (
+    <StyledButton onPress={onPress} isHalf={isHalf} danger={danger}>
         {icon !== '' ? <Ionicons name={icon} size={25} color="white" /> : <></>}
         {label !== '' ? <StyledLabel>{label}</StyledLabel> : <></>}
     </StyledButton>
@@ -11,7 +11,7 @@ export const Button = ({ onPress, label = '', icon = '', isHalf = false }) => (
 
 const StyledButton = styled.TouchableOpacity`
     display: flex;
-    background-color: black;
+    background-color: ${({ danger }) => (danger ? 'rgba(255, 0, 0, .75)' : 'black')};
     flex-direction: row;
     align-items: center;
     justify-content: center;
