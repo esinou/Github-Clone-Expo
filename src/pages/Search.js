@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/native';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
@@ -9,24 +9,41 @@ import { getByUsername, getRepository, getUsersFollowers, getUsersFollowing, sea
 const Search = ({ octokit, navigation }) => {
     const [search, setSearch] = useState('');
     const [users, setUsers] = useState([]);
+    const [usersPage, setUsersPage] = useState(1);
     const [repos, setRepos] = useState([]);
+    const [reposPage, setReposPage] = useState(1);
     const [issues, setIssues] = useState([]);
+    const [issuesPage, setIssuesPage] = useState(1);
+
+    const onLoadMore = async (getFunction, currentPage, setNextPage, setData, data) => {
+        let nextPageData = await getFunction(10, currentPage);
+
+        if (currentPage === 1) {
+            await nextPageData.data.items.shift();
+            await nextPageData.data.items.shift();
+        }
+
+        setData([...data, ...nextPageData.data.items]);
+        setNextPage(currentPage + 1);
+    };
+
+    const searchUsers = async (perPage, page) => searchThis(octokit, 'users', search, perPage, page);
+    const searchRepos = async (perPage, page) => searchThis(octokit, 'repos', search, perPage, page);
+    const searchIssues = async (perPage, page) => searchThis(octokit, 'issuesAndPullRequests', search, perPage, page);
 
     const searchEverything = async () => {
         if (search !== '') {
-            setUsers([]);
-            setRepos([]);
-            setIssues([]);
+            resetResults();
 
-            await searchSomething('users', setUsers, search);
-            await searchSomething('repos', setRepos, search);
-            await searchSomething('issuesAndPullRequests', setIssues, search);
+            await searchSomething('users', setUsers, search, 2, usersPage);
+            await searchSomething('repos', setRepos, search, 2, reposPage);
+            await searchSomething('issuesAndPullRequests', setIssues, search, 2, issuesPage);
         }
     };
 
-    const searchSomething = async (path, setValue, q) => {
+    const searchSomething = async (path, setValue, q, perPage, page) => {
         try {
-            const req = await searchThis(octokit, path, q);
+            const req = await searchThis(octokit, path, q, perPage, page);
             if (req?.status === 200 && req?.data?.items) {
                 setValue(req.data.items);
             }
@@ -66,6 +83,19 @@ const Search = ({ octokit, navigation }) => {
         });
     };
 
+    const resetResults = () => {
+        setUsers([]);
+        setRepos([]);
+        setIssues([]);
+        setUsersPage(1);
+        setReposPage(1);
+        setIssuesPage(1);
+    };
+
+    useEffect(() => {
+        resetResults();
+    }, [search]);
+
     return (
         <StyledContainerStartingTop>
             <StyledScrollView showsVerticalScrollIndicator={false}>
@@ -78,7 +108,13 @@ const Search = ({ octokit, navigation }) => {
                     </StyledButtonContainer>
                 </StyledSearchRow>
                 {users.length ? (
-                    <DisplayRow list={users} onPressRow={onPressUserRow} displayType={DisplayType.user} label="Users" />
+                    <DisplayRow
+                        list={users}
+                        onPressRow={onPressUserRow}
+                        displayType={DisplayType.user}
+                        onLoadMore={() => onLoadMore(searchUsers, usersPage, setUsersPage, setUsers, users)}
+                        label="Users"
+                    />
                 ) : (
                     <></>
                 )}
@@ -87,6 +123,7 @@ const Search = ({ octokit, navigation }) => {
                         list={repos}
                         onPressRow={onPressRepoRow}
                         displayType={DisplayType.repo}
+                        onLoadMore={() => onLoadMore(searchRepos, reposPage, setReposPage, setRepos, repos)}
                         label="Repositories"
                     />
                 ) : (
@@ -97,6 +134,7 @@ const Search = ({ octokit, navigation }) => {
                         list={issues}
                         onPressRow={onPressIssueRow}
                         displayType={DisplayType.issue}
+                        onLoadMore={() => onLoadMore(searchIssues, issuesPage, setIssuesPage, setIssues, issues)}
                         label="Issues"
                     />
                 ) : (

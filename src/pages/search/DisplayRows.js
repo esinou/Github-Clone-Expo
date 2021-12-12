@@ -149,12 +149,14 @@ const AnimatedRow = ({ duration, element, displayType, onPress }) => {
     );
 };
 
-const DisplayRow = ({ list, onPressRow, displayType, label = '' }) => {
+const DisplayRow = ({ list, onPressRow, displayType, label = '', onLoadMore = () => {}, loadingMode = 'new' }) => {
     const [showFull, setShowFull] = useState(false);
     const [loading, setLoading] = useState(false);
     const [previewList, setPreviewList] = useState(list.length > 1 ? [list[0], list[1]] : [list[0]]);
-    const [page, setPage] = useState(0);
-    const [perPage, setPerPage] = useState(2);
+    const animatedRowProps = {
+        displayType: displayType,
+        onPress: onPressRow,
+    };
 
     const addMoreUsers = () => {
         setLoading(true);
@@ -170,32 +172,38 @@ const DisplayRow = ({ list, onPressRow, displayType, label = '' }) => {
         }, 1000);
     };
 
+    const LoadingComponent = ({ onPress }) => (
+        <StyledLoadingContainer onPress={onPress}>
+            {loading ? (
+                <>
+                    <ActivityIndicator size="small" color="black" />
+                    <StyledLoadingText>Loading...</StyledLoadingText>
+                </>
+            ) : showFull ? (
+                <StyledLoadingText>See less...</StyledLoadingText>
+            ) : (
+                <StyledLoadingText>See more...</StyledLoadingText>
+            )}
+        </StyledLoadingContainer>
+    );
+
     return (
         <CategoryContainer label={label}>
-            {previewList.map((element, index) => (
-                <AnimatedRow
-                    duration={500 + index * 200}
-                    element={element}
-                    key={index}
-                    displayType={displayType}
-                    onPress={onPressRow}
-                />
-            ))}
-            {list.length > 2 ? (
-                <StyledLoadingContainer onPress={addMoreUsers}>
-                    {loading ? (
-                        <>
-                            <ActivityIndicator size="small" color="black" />
-                            <StyledLoadingText>Loading...</StyledLoadingText>
-                        </>
-                    ) : showFull ? (
-                        <StyledLoadingText>See less...</StyledLoadingText>
-                    ) : (
-                        <StyledLoadingText>See more...</StyledLoadingText>
-                    )}
-                </StyledLoadingContainer>
+            {loadingMode === 'old'
+                ? previewList.map((element, index) => (
+                      <AnimatedRow {...animatedRowProps} element={element} key={index} duration={500 + index * 200} />
+                  ))
+                : list.map((element, index) => (
+                      <AnimatedRow {...animatedRowProps} element={element} key={index} duration={500 + index * 200} />
+                  ))}
+            {loadingMode === 'old' ? (
+                list.length > 2 ? (
+                    <LoadingComponent onPress={addMoreUsers} />
+                ) : (
+                    <StyledFakeSpace />
+                )
             ) : (
-                <StyledFakeSpace />
+                <LoadingComponent onPress={onLoadMore} />
             )}
         </CategoryContainer>
     );

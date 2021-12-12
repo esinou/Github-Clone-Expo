@@ -8,13 +8,17 @@ import { getRepository, getUserRepos, getUserStarred, octokitGETRequest } from '
 
 const Home = ({ octokit, navigation }) => {
     const [repos, setRepos] = useState([]);
+    const [reposPage, setReposPage] = useState(1);
     const [issues, setIssues] = useState([]);
     const [pulls, setPulls] = useState([]);
     const [favorites, setFavorites] = useState([]);
+    const [favoritesPage, setFavoritesPage] = useState(1);
     const [refreshing, setRefreshing] = useState(false);
 
     const onRefresh = useCallback(async () => {
         setRefreshing(true);
+        setReposPage(1);
+        setFavoritesPage(1);
         await getAllUserData();
         setRefreshing(false);
     }, []);
@@ -28,7 +32,7 @@ const Home = ({ octokit, navigation }) => {
     };
 
     const onPressIssueRow = async (issue, repo_url) => {
-        const repo = await octokitGETRequest(repo_url);
+        const repo = await octokitGETRequest(octokit, repo_url);
         const comments = await octokitGETRequest(octokit, issue.comments_url);
 
         navigation.navigate('SearchDetailsIssue', {
@@ -65,42 +69,54 @@ const Home = ({ octokit, navigation }) => {
             }
         });
 
-        const issuesPromise = issuesUrlList.map(async (element) => {
-            const repoIssues = await octokitGETRequest(octokit, element);
+        if (issuesUrlList.length > 0) {
+            const issuesPromise = issuesUrlList.map(async (element) => {
+                const repoIssues = await octokitGETRequest(octokit, element);
 
-            return repoIssues.data;
-        });
+                return repoIssues.data;
+            });
 
-        const pullsPromise = pullsUrlList.map(async (element) => {
-            const repoPulls = await octokitGETRequest(octokit, element);
+            Promise.all(issuesPromise).then((result) => {
+                setIssues(result.reduce((prev, curr) => [...prev, ...curr]));
+            });
+        }
 
-            return repoPulls.data;
-        });
+        if (pullsUrlList.length > 0) {
+            const pullsPromise = pullsUrlList.map(async (element) => {
+                const repoPulls = await octokitGETRequest(octokit, element);
 
-        Promise.all(issuesPromise).then((result) => {
-            setIssues(
-                result.reduce((prev, curr) => {
-                    return [...prev, ...curr];
-                })
-            );
-        });
+                return repoPulls.data;
+            });
 
-        Promise.all(pullsPromise).then((result) => {
-            setPulls(
-                result.reduce((prev, curr) => {
-                    return [...prev, ...curr];
-                })
-            );
-        });
+            Promise.all(pullsPromise).then((result) => {
+                setPulls(result.reduce((prev, curr) => [...prev, ...curr]));
+            });
+        }
+    };
+
+    const onLoadMore = async (getFunction, currentPage, setNextPage, setData, data) => {
+        let nextPageData = await getFunction(octokit, 10, currentPage);
+
+        if (currentPage === 1) {
+            await nextPageData.data.shift();
+            await nextPageData.data.shift();
+        }
+
+        setData([...data, ...nextPageData.data]);
+        setNextPage(currentPage + 1);
+        await getUserIssuesAndPR([...data, ...nextPageData.data]);
     };
 
     const getAllUserData = async () => {
-        await setRepos([]);
-        await setIssues([]);
-        await setFavorites([]);
+        setRepos([]);
+        setIssues([]);
+        setPulls([]);
+        setFavorites([]);
+        setReposPage(1);
+        setFavoritesPage(1);
 
-        const userRepos = await getUserRepos(octokit);
-        const userFavorites = await getUserStarred(octokit);
+        const userRepos = await getUserRepos(octokit, 2, 0);
+        const userFavorites = await getUserStarred(octokit, 2, 0);
 
         getUserIssuesAndPR(userRepos.data);
 
@@ -128,6 +144,7 @@ const Home = ({ octokit, navigation }) => {
                     <DisplayRow
                         list={repos}
                         onPressRow={onPressRepoRow}
+                        onLoadMore={() => onLoadMore(getUserRepos, reposPage, setReposPage, setRepos, repos)}
                         displayType={DisplayType.repo}
                         label="My repositories"
                     />
@@ -138,6 +155,7 @@ const Home = ({ octokit, navigation }) => {
                     <DisplayRow
                         list={issues}
                         onPressRow={onPressIssueRow}
+                        loadingMode="old"
                         displayType={DisplayType.issue}
                         label="My issues"
                     />
@@ -148,6 +166,7 @@ const Home = ({ octokit, navigation }) => {
                     <DisplayRow
                         list={pulls}
                         onPressRow={onPressPullRow}
+                        loadingMode="old"
                         displayType={DisplayType.pull}
                         label="My pull requests"
                     />
@@ -158,6 +177,9 @@ const Home = ({ octokit, navigation }) => {
                     <DisplayRow
                         list={favorites}
                         onPressRow={onPressRepoRow}
+                        onLoadMore={() =>
+                            onLoadMore(getUserStarred, favoritesPage, setFavoritesPage, setFavorites, favorites)
+                        }
                         displayType={DisplayType.favorite}
                         label="My favorites"
                     />

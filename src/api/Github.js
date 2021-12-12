@@ -95,9 +95,11 @@ const getThisRepoContent = (octokit, owner, repo, path = '', ref) =>
         ref,
     });
 
-const searchThis = (octokit, path, q) =>
+const searchThis = (octokit, path, q, perPage, page) =>
     octokit.rest.search[path]({
         q,
+        per_page: perPage,
+        page,
     });
 
 const getRepoStarredByUser = (octokit, username) =>
@@ -156,8 +158,8 @@ const getUsersFollowers = (octokit, username) =>
     });
 
 const getUserData = (octokit) => octokit.request('GET /user');
-const getUserRepos = (octokit) => octokit.request('GET /user/repos', { per_page: 100 });
-const getUserStarred = (octokit) => octokit.request('GET /user/starred');
+const getUserRepos = (octokit, perPage, page) => octokit.request('GET /user/repos', { per_page: perPage, page });
+const getUserStarred = (octokit, perPage, page) => octokit.request('GET /user/starred', { per_page: perPage, page });
 const getUserFollowers = (octokit) => octokit.request('GET /user/followers');
 const getUserFollowing = (octokit) => octokit.request('GET /user/following');
 
