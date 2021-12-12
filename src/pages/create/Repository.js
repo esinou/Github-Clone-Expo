@@ -37,11 +37,6 @@ export const CreateRepository = ({ navigation, route }) => {
         }
     };
 
-    useEffect(async () => {
-        setLoading(true);
-        setLoading(false);
-    }, []);
-
     return loading ? (
         <Loading />
     ) : (

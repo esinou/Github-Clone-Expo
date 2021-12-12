@@ -11,6 +11,7 @@ import { SearchDetailsIssue, SearchDetailsPull, SearchDetailsRepo, SearchDetails
 import { UserFollowDetails } from '../pages/search/Follow';
 import { UserRepositoriesDetails } from '../pages/search/Repositories';
 import { CreateRepository } from '../pages/create/Repository';
+import { CreateAnIssue } from '../pages/create/Issue';
 
 const Tab = createBottomTabNavigator();
 
@@ -122,6 +123,10 @@ export const TabScreen = ({ octokit, navigation }) => {
         {
             name: 'CreateRepository',
             component: CreateRepository,
+        },
+        {
+            name: 'CreateAnIssue',
+            component: CreateAnIssue,
         },
     ];
 

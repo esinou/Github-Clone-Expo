@@ -8,6 +8,7 @@ import {
     commentThisIssue,
     getRepoBranches,
     getRepoForks,
+    getRepository,
     getRepoStarredByUser,
     getRepoWatchers,
     getThisRepoContent,
@@ -24,6 +25,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-community/picker';
 import { PullMergeText } from '../issue/Merge';
 import { CommentSection } from '../issue/Comment';
+import { Button } from '../../components/Button';
 
 export const SearchDetailsRepo = ({ navigation, route }) => {
     const [repo, setRepo] = useState(route.params.repo.data);
@@ -84,6 +86,19 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
         await actualiseContent(repo.owner.login, repo.name, path + (path === '' ? '' : '/') + folder, currentBranch);
     };
 
+    const onClickCreateIssue = () => {
+        navigation.navigate('CreateAnIssue', {
+            octokit,
+            owner: repo.owner.login,
+            repo: repo.name,
+            lastScreen,
+        });
+    };
+
+    const onClickCreatePR = async () => {
+        navigation.navigate();
+    };
+
     useEffect(async () => {
         await actualiseContent(repo.owner.login, repo.name, path, currentBranch);
     }, [currentBranch]);
@@ -138,6 +153,10 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
             />
             <StyledContainerStartingTop>
                 <StyledScrollView showsVerticalScrollIndicator={false}>
+                    <StyledButtonsRow>
+                        <Button onPress={onClickCreateIssue} label="Create Issue" isHalf />
+                        <Button onPress={onClickCreatePR} label="Create PR" isHalf />
+                    </StyledButtonsRow>
                     <StyledRowContainer>
                         <StyledTextLabel>Current branch:</StyledTextLabel>
                         <Picker
@@ -165,6 +184,14 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
         </>
     );
 };
+
+const StyledButtonsRow = styled.View`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+`;
 
 const StyledTouchablePath = styled.TouchableOpacity`
     display: flex;
@@ -251,7 +278,6 @@ export const SearchDetailsPull = ({ navigation, route }) => {
 
     useEffect(async () => {
         setLoading(true);
-        console.log(route.params.pull);
         await setPull(route.params.pull);
         await setComments(route.params.comments);
         await setLastScreen(route.params.lastScreen);

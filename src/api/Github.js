@@ -15,6 +15,14 @@ const deleteAComment = (octokit, owner, repo, comment_id) =>
         comment_id,
     });
 
+const createAnIssue = (octokit, owner, repo, title, body) =>
+    octokit.rest.issues.create({
+        owner,
+        repo,
+        title,
+        body,
+    });
+
 const createRepo = (octokit, name, description, isPrivate) =>
     octokit.rest.repos.createForAuthenticatedUser({
         name,
@@ -134,6 +142,7 @@ const getUserFollowers = (octokit) => octokit.request('GET /user/followers');
 const getUserFollowing = (octokit) => octokit.request('GET /user/following');
 
 export {
+    createAnIssue,
     commentThisIssue,
     deleteAComment,
     getRepoBranches,
