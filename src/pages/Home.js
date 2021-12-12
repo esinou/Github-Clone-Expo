@@ -28,7 +28,7 @@ const Home = ({ octokit, navigation }) => {
     };
 
     const onPressIssueRow = async (issue, repo_url) => {
-        const repo = await octokit.request(`GET ${repo_url}`);
+        const repo = await octokitGETRequest(repo_url);
         const comments = await octokitGETRequest(octokit, issue.comments_url);
 
         navigation.navigate('SearchDetailsIssue', {
@@ -41,9 +41,12 @@ const Home = ({ octokit, navigation }) => {
     };
 
     const onPressPullRow = async (pull) => {
+        const issuesPos = pull.issue_url.search('/issues');
+        const repo = await octokitGETRequest(octokit, pull.issue_url.substring(0, issuesPos));
         const comments = await octokitGETRequest(octokit, pull.comments_url);
 
         navigation.navigate('SearchDetailsPull', {
+            repo: repo.data,
             pull,
             comments: comments.data,
             octokit,
@@ -97,7 +100,6 @@ const Home = ({ octokit, navigation }) => {
         await setFavorites([]);
 
         const userRepos = await getUserRepos(octokit);
-        console.log(userRepos.data);
         const userFavorites = await getUserStarred(octokit);
 
         getUserIssuesAndPR(userRepos.data);

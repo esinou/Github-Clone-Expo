@@ -9,7 +9,7 @@ import {
 } from '../../styled/Containers';
 import { Input } from '../../components/Input';
 import { Button } from '../../components/Button';
-import { createAPR } from '../../api/Github';
+import { createAPR, octokitGETRequest } from '../../api/Github';
 import { Loading } from '../../components/Loading';
 import { StyledErrorLabel } from './Repository';
 import { CustomPicker } from '../../components/Picker';
@@ -31,8 +31,10 @@ export const CreateAPR = ({ navigation, route }) => {
         setError('');
         try {
             const pr = await createAPR(octokit, owner, repo, head, base, title, description);
+            const repo = await octokitGETRequest(octokit, `https://api.github.com/repos/${owner}/${repo}`);
 
             navigation.navigate('SearchDetailsPull', {
+                repo: repo.data,
                 pull: pr.data,
                 comments: [],
                 octokit,

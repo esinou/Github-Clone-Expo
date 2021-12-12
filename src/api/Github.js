@@ -41,6 +41,14 @@ const updateIssue = (octokit, owner, repo, issue_number, state) =>
         state,
     });
 
+const updatePR = (octokit, owner, repo, pull_number, state) =>
+    octokit.rest.pulls.update({
+        owner,
+        repo,
+        pull_number,
+        state,
+    });
+
 const createRepo = (octokit, name, description, isPrivate) =>
     octokit.rest.repos.createForAuthenticatedUser({
         name,
@@ -161,6 +169,7 @@ const getUserFollowers = (octokit) => octokit.request('GET /user/followers');
 const getUserFollowing = (octokit) => octokit.request('GET /user/following');
 
 export {
+    updatePR,
     createAPR,
     updateIssue,
     createAnIssue,

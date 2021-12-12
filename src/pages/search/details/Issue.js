@@ -6,6 +6,7 @@ import { CommentSection } from '../../issue/Comment';
 import { StyledContainerStartingTop, StyledScrollView } from '../../../styled/Containers';
 import { commentThisIssue, octokitGETRequest, updateIssue } from '../../../api/Github';
 import { Loading } from '../../../components/Loading';
+import { Alert } from 'react-native';
 
 export const SearchDetailsIssue = ({ navigation, route }) => {
     const { octokit } = route.params;
@@ -65,6 +66,28 @@ export const SearchDetailsIssue = ({ navigation, route }) => {
         await updateIssueState('closed');
     };
 
+    const onPressStatus = (state) => {
+        if (state === 'open') {
+            Alert.alert('Close this issue', 'Do you really want to close this issue ?', [
+                {
+                    text: 'Cancel',
+                    onPress: () => {},
+                    style: 'cancel',
+                },
+                { text: 'Yes', onPress: onCloseIssue },
+            ]);
+        } else {
+            Alert.alert('Re-Open this issue', 'Do you really want to re-open this issue ?', [
+                {
+                    text: 'Cancel',
+                    onPress: () => {},
+                    style: 'cancel',
+                },
+                { text: 'Yes', onPress: onOpenIssue },
+            ]);
+        }
+    };
+
     return loading ? (
         <Loading />
     ) : (
@@ -78,8 +101,7 @@ export const SearchDetailsIssue = ({ navigation, route }) => {
                 ownerAvatarUrl={repo.owner.avatar_url}
                 state={issue.state}
                 statusDate={issue.updated_at}
-                onOpenIssue={onOpenIssue}
-                onCloseIssue={onCloseIssue}
+                onPressStatus={onPressStatus}
             />
             <StyledContainerStartingTop>
                 <StyledScrollView showsVerticalScrollIndicator={false}>
