@@ -51,9 +51,9 @@ const UserRepositoriesDetails = ({ navigation, route }) => {
 
     useEffect(async () => {
         setLoading(true);
-        await setList(route.params.list);
-        await setLastScreen(route.params.lastScreen);
-        await setLabel(route.params.label);
+        setList(route.params.list);
+        setLastScreen(route.params.lastScreen);
+        setLabel(route.params.label);
         setLoading(false);
     }, [route.params]);
 

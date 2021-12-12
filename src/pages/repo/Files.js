@@ -3,7 +3,6 @@ import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Animated } from 'react-native';
 import { Loading } from '../../components/Loading';
-import { TouchableOpacity } from 'react-native';
 
 const FileRow = ({ duration, isLast, iconName, index, name, isFolder, onUpdatePath }) => {
     const slideInAnim = useRef(new Animated.Value(50)).current;

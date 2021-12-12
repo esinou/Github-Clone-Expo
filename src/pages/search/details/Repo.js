@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/native';
-import { Picker } from '@react-native-community/picker';
 import { Ionicons } from '@expo/vector-icons';
 import {
     deleteRepo,

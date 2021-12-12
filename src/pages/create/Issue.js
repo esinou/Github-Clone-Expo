@@ -45,12 +45,12 @@ export const CreateAnIssue = ({ navigation, route }) => {
 
     useEffect(async () => {
         setLoading(true);
-        await setTitle('');
-        await setDescription('');
-        await setError('');
-        await setOwner(route.params.owner);
-        await setRepo(route.params.repo);
-        await setLastScreen(route.params.lastScreen);
+        setTitle('');
+        setDescription('');
+        setError('');
+        setOwner(route.params.owner);
+        setRepo(route.params.repo);
+        setLastScreen(route.params.lastScreen);
         setLoading(false);
     }, [route.params]);
 

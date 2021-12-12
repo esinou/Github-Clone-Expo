@@ -145,13 +145,6 @@ const getIssue = (octokit, owner, repo, issue_number) =>
         issue_number,
     });
 
-const getPullRequest = (octokit, owner, repo, pull_number) =>
-    octokit.rest.pulls.get({
-        owner,
-        repo,
-        pull_number,
-    });
-
 const getUsersFollowing = (octokit, username) =>
     octokit.request('GET /users/{username}/following', {
         username,
@@ -188,7 +181,6 @@ export {
     getByUsername,
     getRepository,
     getIssue,
-    getPullRequest,
     getUsersFollowing,
     getUsersFollowers,
     getUserData,

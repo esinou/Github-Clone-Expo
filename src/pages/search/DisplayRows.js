@@ -153,6 +153,8 @@ const DisplayRow = ({ list, onPressRow, displayType, label = '' }) => {
     const [showFull, setShowFull] = useState(false);
     const [loading, setLoading] = useState(false);
     const [previewList, setPreviewList] = useState(list.length > 1 ? [list[0], list[1]] : [list[0]]);
+    const [page, setPage] = useState(0);
+    const [perPage, setPerPage] = useState(2);
 
     const addMoreUsers = () => {
         setLoading(true);

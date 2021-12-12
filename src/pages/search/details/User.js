@@ -28,9 +28,9 @@ export const SearchDetailsUser = ({ navigation, route }) => {
         const thisUser = await getUserData(octokit);
         const starredData = await getRepoStarredByUser(octokit, user.login);
 
-        await setStarred(starredData.data);
-        await setIsFollowable(thisUser.data.login !== user.login);
-        await setIsFollowed(userExistsInArray(followers.data, thisUser.data.login));
+        setStarred(starredData.data);
+        setIsFollowable(thisUser.data.login !== user.login);
+        setIsFollowed(userExistsInArray(followers.data, thisUser.data.login));
         setLoading(false);
     }, []);
 
