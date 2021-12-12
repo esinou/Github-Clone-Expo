@@ -5,6 +5,7 @@ import { RepoHeader } from '../repo/Header';
 import { RepoFiles } from '../repo/Files';
 import { StyledBio } from '../../styled/Containers';
 import {
+    commentThisIssue,
     getRepoBranches,
     getRepoForks,
     getRepoStarredByUser,
@@ -12,6 +13,7 @@ import {
     getThisRepoContent,
     getUserData,
     getUserStarred,
+    octokitGETRequest,
 } from '../../api/Github';
 import { StyledContainerStartingTop, StyledScrollView } from '../../styled/Containers';
 import { IssueHeader } from '../issue/Header';
@@ -21,6 +23,7 @@ import { Loading } from '../../components/Loading';
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-community/picker';
 import { PullMergeText } from '../issue/Merge';
+import { CommentSection } from '../issue/Comment';
 
 export const SearchDetailsRepo = ({ navigation, route }) => {
     const [repo, setRepo] = useState(route.params.repo.data);
@@ -173,20 +176,41 @@ const StyledTouchablePath = styled.TouchableOpacity`
 `;
 
 export const SearchDetailsIssue = ({ navigation, route }) => {
+    const { octokit } = route.params;
     const [issue, setIssue] = useState(route.params.issue);
     const [repo, setRepo] = useState({});
+    const [comment, setComment] = useState('');
+    const [commentError, setCommentError] = useState('');
     const [lastScreen, setLastScreen] = useState('Search');
     const [comments, setComments] = useState(route.params.comments);
     const [loading, setLoading] = useState(true);
 
     useEffect(async () => {
         setLoading(true);
+        await setComment('');
+        await setCommentError('');
         await setIssue(route.params.issue);
         await setRepo(route.params.repo);
         await setComments(route.params.comments);
         await setLastScreen(route.params.lastScreen);
         setLoading(false);
     }, [route.params]);
+
+    const refreshComments = async () => {
+        const comments = await octokitGETRequest(octokit, issue.comments_url);
+
+        setComments(comments.data);
+    };
+
+    const onComment = async () => {
+        setCommentError('');
+        try {
+            await commentThisIssue(octokit, repo.owner.login, repo.name, issue.number, comment);
+            await refreshComments();
+        } catch (e) {
+            setCommentError(e.message);
+        }
+    };
 
     return loading ? (
         <Loading />
@@ -206,6 +230,13 @@ export const SearchDetailsIssue = ({ navigation, route }) => {
                 <StyledScrollView showsVerticalScrollIndicator={false}>
                     <StyledIssueTitle>{issue.title}</StyledIssueTitle>
                     <IssueComments comments={comments} />
+                    <CommentSection
+                        enabled={true}
+                        onComment={onComment}
+                        error={commentError}
+                        text={comment}
+                        setText={setComment}
+                    />
                 </StyledScrollView>
             </StyledContainerStartingTop>
         </>

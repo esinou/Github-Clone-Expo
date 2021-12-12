@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { RefreshControl } from 'react-native';
 import { DisplayRow, DisplayType } from './search/DisplayRows';
 import { StyledContainerStartingTop, StyledScrollView } from '../styled/Containers';
-import { getPullRequest, getRepository, getUserRepos, getUserStarred, octokitGETRequest } from '../api/Github';
+import { getRepository, getUserRepos, getUserStarred, octokitGETRequest } from '../api/Github';
 
 const Home = ({ octokit, navigation }) => {
     const [repos, setRepos] = useState([]);
@@ -29,7 +29,7 @@ const Home = ({ octokit, navigation }) => {
 
     const onPressIssueRow = async (issue, repo_url) => {
         const repo = await octokit.request(`GET ${repo_url}`);
-        const comments = await octokit.request(`GET ${issue.comments_url}`);
+        const comments = await octokitGETRequest(octokit, issue.comments_url);
 
         navigation.navigate('SearchDetailsIssue', {
             issue,
@@ -41,7 +41,7 @@ const Home = ({ octokit, navigation }) => {
     };
 
     const onPressPullRow = async (pull) => {
-        const comments = await octokit.request(`GET ${pull.comments_url}`);
+        const comments = await octokitGETRequest(octokit, pull.comments_url);
 
         navigation.navigate('SearchDetailsPull', {
             pull,

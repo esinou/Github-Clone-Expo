@@ -23,7 +23,7 @@ export const CreateRepository = ({ navigation, route }) => {
     const [error, setError] = useState('');
 
     const createNewRepository = async () => {
-        setError(false);
+        setError('');
         try {
             const repo = await createRepo(octokit, repository, description, isPrivate);
 
@@ -77,7 +77,7 @@ export const CreateRepository = ({ navigation, route }) => {
     );
 };
 
-const StyledErrorLabel = styled.Text`
+export const StyledErrorLabel = styled.Text`
     color: rgba(255, 0, 0, 0.5);
     font-size: 14px;
     font-family: 'Montserrat_500Medium';
