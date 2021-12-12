@@ -9,6 +9,7 @@ import {
     getRepoWatchers,
     getThisRepoContent,
     getUserStarred,
+    octokitGETRequest,
 } from '../../../api/Github';
 import { Loading } from '../../../components/Loading';
 import { RepoHeader } from '../../repo/Header';
@@ -16,6 +17,7 @@ import { StyledBio, StyledContainerStartingTop, StyledScrollView } from '../../.
 import { Button } from '../../../components/Button';
 import { RepoFiles } from '../../repo/Files';
 import { RepoDangerZone } from '../../repo/DangerZone';
+import { CustomPicker } from '../../../components/Picker';
 
 export const SearchDetailsRepo = ({ navigation, route }) => {
     const [repo, setRepo] = useState(route.params.repo.data);
@@ -50,11 +52,7 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
         });
     };
 
-    const repoExistsInArray = (table, repoName) => {
-        return table.some(function (el) {
-            return el.name === repoName;
-        });
-    };
+    const repoExistsInArray = (table, repoName) => table.some((el) => el.name === repoName);
 
     const actualiseContent = async (owner, name, path = '', branch) => {
         try {
@@ -86,7 +84,17 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
     };
 
     const onClickCreatePR = async () => {
-        navigation.navigate();
+        navigation.navigate('CreateAPR', {
+            octokit,
+            branches: await octokitGETRequest(
+                octokit,
+                `https://api.github.com/repos/${repo.owner.login}/${repo.name}/branches`
+            ),
+            defaultBranch: repo.default_branch,
+            owner: repo.owner.login,
+            repo: repo.name,
+            lastScreen,
+        });
     };
 
     const onClickDeleteRepo = async () => {
@@ -158,18 +166,13 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
                         <Button onPress={onClickCreateIssue} label="Create Issue" isHalf />
                         <Button onPress={onClickCreatePR} label="Create PR" isHalf />
                     </StyledButtonsRow>
-                    <StyledRowContainer>
-                        <StyledTextLabel>Current branch:</StyledTextLabel>
-                        <Picker
-                            selectedValue={currentBranch}
-                            style={{ height: 50, width: 100, fontFamily: 'Montserrat_500Medium' }}
-                            onValueChange={(el, i) => setCurrentBranch(el)}
-                        >
-                            {branches.map((element, index) => (
-                                <Picker.Item label={element.name} value={element.name} key={index} />
-                            ))}
-                        </Picker>
-                    </StyledRowContainer>
+                    <CustomPicker
+                        value={currentBranch}
+                        setValue={setCurrentBranch}
+                        label="Current branch:"
+                        list={branches}
+                        elementLabel="name"
+                    />
                     <StyledBio>{repo.description}</StyledBio>
                     {path !== '' ? (
                         <StyledTouchablePath onPress={resetPath}>

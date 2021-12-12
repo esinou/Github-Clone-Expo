@@ -23,6 +23,16 @@ const createAnIssue = (octokit, owner, repo, title, body) =>
         body,
     });
 
+const createAPR = (octokit, owner, repo, head, base, title, body) =>
+    octokit.rest.pulls.create({
+        owner,
+        repo,
+        head,
+        base,
+        title,
+        body,
+    });
+
 const updateIssue = (octokit, owner, repo, issue_number, state) =>
     octokit.rest.issues.update({
         owner,
@@ -151,6 +161,7 @@ const getUserFollowers = (octokit) => octokit.request('GET /user/followers');
 const getUserFollowing = (octokit) => octokit.request('GET /user/following');
 
 export {
+    createAPR,
     updateIssue,
     createAnIssue,
     commentThisIssue,
