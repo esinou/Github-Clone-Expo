@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { UserHeader } from './search/Details';
+import { UserHeader } from './user/Header';
 import { StyledContainerStartingTop, StyledScrollView } from '../styled/Containers';
 import { getUserData, getUserFollowers, getUserFollowing, getUserStarred } from '../api/Github';
 import { UserProfile } from './user/Profile';
