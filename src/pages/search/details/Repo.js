@@ -20,9 +20,9 @@ import { RepoDangerZone } from '../../repo/DangerZone';
 import { CustomPicker } from '../../../components/Picker';
 
 export const SearchDetailsRepo = ({ navigation, route }) => {
+    const { octokit } = route.params;
     const [repo, setRepo] = useState(route.params.repo.data);
     const [lastScreen, setLastScreen] = useState(route.params.lastScreen);
-    const { octokit } = route.params;
     const [isStarred, setIsStarred] = useState(false);
     const [content, setContent] = useState([]);
     const [branches, setBranches] = useState([route.params.repo.data.default_branch]);
@@ -183,7 +183,7 @@ export const SearchDetailsRepo = ({ navigation, route }) => {
                         <></>
                     )}
                     <RepoFiles content={content} onUpdatePath={enterThisFolder} />
-                    <RepoDangerZone onPressDeleteRepo={onClickDeleteRepo} />
+                    {repo.permissions.admin ? <RepoDangerZone onPressDeleteRepo={onClickDeleteRepo} /> : <></>}
                 </StyledScrollView>
             </StyledContainerStartingTop>
         </>
