@@ -2,9 +2,43 @@ import React from 'react';
 import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
 import { GoBack, StyledFlex, StyledUsername } from '../../styled/Containers';
+import { Alert } from 'react-native';
 
-const IssueHeader = ({ goBack, navigation, repoName, lastScreen, owner, ownerAvatarUrl, state, statusDate }) => {
+const IssueHeader = ({
+    goBack,
+    navigation,
+    repoName,
+    lastScreen,
+    owner,
+    ownerAvatarUrl,
+    state,
+    statusDate,
+    onOpenIssue,
+    onCloseIssue,
+}) => {
     const formatedDate = new Date(statusDate);
+
+    const onPressStatus = () => {
+        if (state === 'open') {
+            Alert.alert('Close this issue', 'Do you really want to close this issue ?', [
+                {
+                    text: 'Cancel',
+                    onPress: () => {},
+                    style: 'cancel',
+                },
+                { text: 'Yes', onPress: onCloseIssue },
+            ]);
+        } else {
+            Alert.alert('Re-Open this issue', 'Do you really want to re-open this issue ?', [
+                {
+                    text: 'Cancel',
+                    onPress: () => {},
+                    style: 'cancel',
+                },
+                { text: 'Yes', onPress: onOpenIssue },
+            ]);
+        }
+    };
 
     return (
         <StyledRepoHeader>
@@ -27,7 +61,7 @@ const IssueHeader = ({ goBack, navigation, repoName, lastScreen, owner, ownerAva
                 />
                 <StyledOwnerName>{owner}</StyledOwnerName>
             </StyledRowContainer>
-            <StyledState opened={state === 'open'}>
+            <StyledState opened={state === 'open'} onPress={onPressStatus}>
                 <Ionicons name={state === 'open' ? 'lock-open' : 'lock-closed'} size={15} color="white" />
                 <StyledStatus>{state === 'open' ? 'Opened' : 'Closed'}</StyledStatus>
             </StyledState>
@@ -53,7 +87,7 @@ const StyledStatus = styled.Text`
     font-family: 'Montserrat_500Medium';
 `;
 
-const StyledState = styled.View`
+const StyledState = styled.TouchableOpacity`
     display: flex;
     background-color: ${({ opened }) => (opened ? 'rgb(50, 168, 80)' : 'rgb(214, 28, 28)')};
     width: 110px;

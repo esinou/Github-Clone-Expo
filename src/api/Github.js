@@ -23,6 +23,14 @@ const createAnIssue = (octokit, owner, repo, title, body) =>
         body,
     });
 
+const updateIssue = (octokit, owner, repo, issue_number, state) =>
+    octokit.rest.issues.update({
+        owner,
+        repo,
+        issue_number,
+        state,
+    });
+
 const createRepo = (octokit, name, description, isPrivate) =>
     octokit.rest.repos.createForAuthenticatedUser({
         name,
@@ -142,6 +150,7 @@ const getUserFollowers = (octokit) => octokit.request('GET /user/followers');
 const getUserFollowing = (octokit) => octokit.request('GET /user/following');
 
 export {
+    updateIssue,
     createAnIssue,
     commentThisIssue,
     deleteAComment,

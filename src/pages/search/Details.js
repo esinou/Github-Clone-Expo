@@ -8,13 +8,13 @@ import {
     commentThisIssue,
     getRepoBranches,
     getRepoForks,
-    getRepository,
     getRepoStarredByUser,
     getRepoWatchers,
     getThisRepoContent,
     getUserData,
     getUserStarred,
     octokitGETRequest,
+    updateIssue,
 } from '../../api/Github';
 import { StyledContainerStartingTop, StyledScrollView } from '../../styled/Containers';
 import { IssueHeader } from '../issue/Header';
@@ -239,6 +239,27 @@ export const SearchDetailsIssue = ({ navigation, route }) => {
         }
     };
 
+    const updateIssueState = async (state) => {
+        setLoading(true);
+        try {
+            await updateIssue(octokit, repo.owner.login, repo.name, issue.number, state);
+            const thisIssue = await octokitGETRequest(octokit, issue.url);
+
+            setIssue(thisIssue.data);
+        } catch (e) {
+            console.log(e);
+        }
+        setLoading(false);
+    };
+
+    const onOpenIssue = async () => {
+        await updateIssueState('open');
+    };
+
+    const onCloseIssue = async () => {
+        await updateIssueState('closed');
+    };
+
     return loading ? (
         <Loading />
     ) : (
@@ -252,6 +273,8 @@ export const SearchDetailsIssue = ({ navigation, route }) => {
                 ownerAvatarUrl={repo.owner.avatar_url}
                 state={issue.state}
                 statusDate={issue.updated_at}
+                onOpenIssue={onOpenIssue}
+                onCloseIssue={onCloseIssue}
             />
             <StyledContainerStartingTop>
                 <StyledScrollView showsVerticalScrollIndicator={false}>
